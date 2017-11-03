@@ -141,6 +141,7 @@ xcopy /Y "SDL2\SDL2_image-2.0.1\lib\x86\*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Vector2D.h" />
     <ClInclude Include="WindowManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />

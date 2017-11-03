@@ -30,28 +30,6 @@ using namespace std;
 #define WINDOW_HEIGHT 768
 
 // This header file contains all the constants & enumarated types for the game
-typedef struct Vector2D
-{
-	float  X;
-	float  Y;
-
-	// Get the dot product of two 2D vectors
-	static int dotProduct(Vector2D vector1, Vector2D vector2)
-	{
-		return ((vector1.X * vector2.X) + (vector1.Y * vector2.Y));
-	}
-
-	// Get the andgle between two 2D vectors
-	static float getAngle(Vector2D vector1, Vector2D vector2)
-	{
-		int dotProduct = Vector2D::dotProduct(vector1, vector2);
-	}
-
-	// Get the length of the current 2D vector
-	float getLength()
-	{
-		return ((X * X) + (Y * Y));
-	}	
-};
+#include "Vector2D.h"
 
 #endif
