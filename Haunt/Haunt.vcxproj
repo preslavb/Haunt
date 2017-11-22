@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>SDL2\SDL2_image-2.0.1\include;SDL2\SDL2_ttf-2.0.14\include;SDL2\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>SDL2\SDL2-2.0.4\lib\x86;SDL2\SDL2_image-2.0.1\lib\x86;SDL2\SDL2_ttf-2.0.14\lib\x86</AdditionalLibraryDirectories>
@@ -103,6 +104,7 @@ xcopy /Y "SDL2\SDL2_image-2.0.1\lib\x86\*.dll" "$(OutDir)"</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>SDL2\SDL2_image-2.0.1\include;SDL2\SDL2_ttf-2.0.14\include;SDL2\SDL2-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -130,8 +132,13 @@ xcopy /Y "SDL2\SDL2_image-2.0.1\lib\x86\*.dll" "$(OutDir)"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Dynamic.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="KeyState.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -139,8 +146,15 @@ xcopy /Y "SDL2\SDL2_image-2.0.1\lib\x86\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="HauntSDL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Coroutine.h" />
+    <ClInclude Include="CoroutineManager.h" />
+    <ClInclude Include="Dynamic.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="KeyState.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="WindowManager.h" />
     <ClInclude Include="Sprite.h" />

@@ -10,21 +10,21 @@
 using namespace std;
 
 //This is the SDL window
-static WindowManager* windowManager = WindowManager::getInstance();
+static WindowManager* windowManager = WindowManager::GetInstance();
 
 //This is the our Game
-static Game* game = Game::getInstance();
+static Game* game = Game::GetInstance();
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	if (!windowManager->initializeWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT))
+	if (!windowManager->InitializeWindow(_WINDOW_TITLE, _WINDOW_WIDTH, _WINDOW_HEIGHT))
 		return -1;
 
-	game->initialise(windowManager->getWindow(), windowManager->getSDLRenderer());
+	game->Initialise(windowManager->GetWindow(), windowManager->GetSdlRenderer());
 
-	game->run(windowManager->getWindow(), windowManager->getSDLRenderer());
+	game->Run(windowManager->GetWindow(), windowManager->GetSdlRenderer());
 
-	game->cleanUp(windowManager->getWindow());
+	game->CleanUp(windowManager->GetWindow());
 
 	return 0;
 }

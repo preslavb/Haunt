@@ -7,6 +7,7 @@ Texture.cpp
 */
 #include "Texture.h"
 using namespace std;
+
 /*
 =================
 - Data constructor initializes the OpenGL Texture ID object
@@ -15,8 +16,9 @@ using namespace std;
 */
 Texture::Texture()
 {
-	Texture::sdlTextureID = NULL;
+	sdlTextureId = nullptr;
 }
+
 /*
 =================
 - Data constructor initializes the OpenGL Texture ID object
@@ -24,9 +26,9 @@ Texture::Texture()
 * @param fileName The image file to load
 =================
 */
-Texture::Texture(LPCSTR fileName, SDL_Renderer *renderer)
+Texture::Texture(const LPCSTR t_file_name, SDL_Renderer* t_renderer)
 {
-	Texture::loadTexture(fileName, renderer);
+	LoadTexture(t_file_name, t_renderer);
 }
 
 /*
@@ -39,14 +41,14 @@ Texture::~Texture()
 	delete this;
 }
 
-int Texture::getIndex()
+int Texture::GetIndex() const
 {
 	return this->index;
 }
 
-void Texture::setIndex(int index)
+void Texture::SetIndex(const int t_index)
 {
-	this->index = index;
+	this->index = t_index;
 
 	cout << "Texture index set to " << this->index << endl;
 }
@@ -56,35 +58,34 @@ void Texture::setIndex(int index)
 - create the texture for use.
 =================
 */
-bool Texture::loadTexture(LPCSTR fileName, SDL_Renderer *renderer) 	// create the texture for use.
+bool Texture::LoadTexture(const LPCSTR t_file_name, SDL_Renderer* t_renderer) // create the texture for use.
 {
-
 	// Call SDL_Image IMG_LoadTexture to create the desired texture
-	sdlTextureID = IMG_LoadTexture(renderer, fileName);
+	sdlTextureId = IMG_LoadTexture(t_renderer, t_file_name);
 
 	// Check the Texture has been created from the surface
-	if (sdlTextureID != 0)
+	if (sdlTextureId != nullptr)
 	{
-		cout << "Texture '" << fileName << "' successfully loaded." << endl;
-		SDL_QueryTexture(sdlTextureID, NULL, NULL, &textureWidth, &textureHeight); // determine the width an height of the texture
+		cout << "Texture '" << t_file_name << "' successfully loaded." << endl;
+		SDL_QueryTexture(sdlTextureId, nullptr, nullptr, &textureWidth, &textureHeight);
+		// determine the width an height of the texture
 		return true;
 	}
-	else
-	{
-		cout << "Texture '" << fileName << "' could not be loaded!!" << endl;
-		cout << SDL_GetError() << endl;
-	}
+	cout << "Texture '" << t_file_name << "' could not be loaded!!" << endl;
+	cout << SDL_GetError() << endl;
 
 	return false;
 }
+
 /*
 =================
 - return the texture.
 =================
 */
-SDL_Texture* Texture::getTexture()        // return the texture.
+SDL_Texture* Texture::GetTexture() const
+// return the texture.
 {
-	return Texture::sdlTextureID;
+	return sdlTextureId;
 }
 
 /*
@@ -92,34 +93,38 @@ SDL_Texture* Texture::getTexture()        // return the texture.
 - Return width of texture.
 =================
 */
-int Texture::getTWidth() 						// Return width of texture;
+int Texture::GetTWidth() const
+// Return width of texture;
 {
 	return textureWidth;
 }
+
 /*
 =================
 - Return height of texture.
 =================
 */
-int Texture::getTHeight() 						// Return height of texture;
+int Texture::GetTHeight() const
+// Return height of texture;
 {
 	return textureHeight;
 }
+
 /*
 =================
 - Render the texture.
 =================
 */
-void Texture::renderTexture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, Vector2D scaling)
+void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
+							SDL_Rect* t_destination_rect)
 {
 	//SDL_RenderSetScale(renderer, scaling.X, scaling.Y);
-	SDL_RenderCopy(renderer, texture, sourceRect, destinationRect);
+	SDL_RenderCopy(t_renderer, t_texture, t_source_rect, t_destination_rect);
 }
 
-void Texture::renderTexture(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Rect* sourceRect, SDL_Rect* destinationRect, double rotationAngle, SDL_Point* spriteCentre, Vector2D scaling)
+void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
+							SDL_Rect* t_destination_rect, const double rotationAngle, SDL_Point* t_sprite_centre, Vector2D t_scaling)
 {
 	//SDL_RenderSetScale(renderer, scaling.X, scaling.Y);
-	SDL_RenderCopyEx(renderer, texture, sourceRect, destinationRect, rotationAngle, spriteCentre, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(t_renderer, t_texture, t_source_rect, t_destination_rect, rotationAngle, t_sprite_centre, SDL_FLIP_NONE);
 }
-
-

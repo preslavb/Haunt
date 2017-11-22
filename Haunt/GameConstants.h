@@ -15,7 +15,10 @@
 #include <SDL_ttf.h>
 // Maths functions
 #include <math.h>
-#define PI 3.14159265
+#define _PI 3.14159265
+#define _FRICTION 10
+#define _GRAVITY 9.8
+#define _METER 10
 
 // STL Container & Algorithms
 #include <vector>
@@ -25,11 +28,8 @@
 using namespace std;
 
 //Define the string to appear in the top left corner of the window
-#define WINDOW_TITLE "Haunt"
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
-
-// This header file contains all the constants & enumarated types for the game
-#include "Vector2D.h"
+#define _WINDOW_TITLE "Haunt"
+#define _WINDOW_WIDTH 1024
+#define _WINDOW_HEIGHT 768
 
 #endif

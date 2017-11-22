@@ -1,7 +1,6 @@
 #ifndef _SPRITE_H
 #define _SPRITE_H
 
-#include "TextureManager.h"
 #include "Texture.h"
 
 // The 2D representation of a texture in the game
@@ -25,22 +24,23 @@ private:
 
 public:
 	Sprite();
-	Sprite(Texture* theSpriteTexture);
+	Sprite(Texture* t_the_sprite_texture);
 	~Sprite();
-	void render(SDL_Renderer* renderer, SDL_Rect* sourceRect, SDL_Rect* destinationRect, Vector2D scaling);
-	void render(SDL_Renderer* renderer, SDL_Rect* sourceRect, SDL_Rect* destinationRect, double rotationAngle, SDL_Point* spriteCentre, Vector2D scaling);
-	SDL_Rect getSpritePosition();
-	void setSpritePosition(SDL_Point position);
-	Texture* getTexture();
-	void setTexture(Texture* theSpriteTexture);
-	void setSpriteDimensions(int textureWidth, int textureHeight);
-	SDL_Rect getSpriteDimensions();
-	SDL_Point getSpriteCentre();
-	void setSpriteCentre(SDL_Point centre);
-	Vector2D getSpriteScale();
-	void setSpriteScale(Vector2D scale);
-	void scaleSprite();
-	float getSpriteRotationAngle();
-	void setSpriteRotationAngle(float angle);
+	void Render(SDL_Renderer* t_renderer, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect) const;
+	void Render(SDL_Renderer* t_renderer, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect, double t_rotation_angle,
+	            SDL_Point* t_sprite_centre, Vector2D t_scaling) const;
+	SDL_Rect GetSpritePosition() const;
+	void SetSpritePosition(SDL_Point t_position);
+	Texture* GetTexture() const;
+	void SetTexture(Texture* t_the_sprite_texture);
+	void SetSpriteDimensions(int t_texture_width, int t_texture_height);
+	SDL_Rect GetSpriteDimensions() const;
+	SDL_Point GetSpriteCentre() const;
+	void SetSpriteCentre(SDL_Point t_centre);
+	Vector2D GetSpriteScale() const;
+	void SetSpriteScale(Vector2D t_scale);
+	void ScaleSprite();
+	float getSpriteRotationAngle() const;
+	void SetSpriteRotationAngle(float t_angle);
 };
 #endif

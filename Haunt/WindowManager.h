@@ -7,27 +7,43 @@
 
 using namespace std;
 
+// The manager for the Windows Window screen
 class WindowManager
 {
 public:
+	// Constructor
 	WindowManager();
 
-	bool initializeWindow(string windowTitle, int width, int height);
-	void checkSDLError(int line);
-	SDL_Window* getWindow();
-	SDL_GLContext getOpenGLContext();
-	SDL_Renderer* getSDLRenderer();
+	// Initialisation of the window with a title, width and height
+	bool InitializeWindow(string t_window_title, int t_width, int t_height);
 
-	static WindowManager* getInstance();
+	// Throw any errors that SDL might have encountered during creation of the window
+	static void CheckSdlError(int t_line);
+
+	// Get a reference to the window
+	SDL_Window* GetWindow() const;
+
+	// Returns the OpenGL Context
+	SDL_GLContext GetOpenGlContext() const;
+
+	// Returns the SDL Renderer
+	SDL_Renderer* GetSdlRenderer() const;
+
+	// Singleton
+	static WindowManager* GetInstance();
 
 private:
-
+	// The singleton instance of the Window Manager
 	static WindowManager* instance;
-	SDL_Window *mainWindow;
-	SDL_GLContext mainContext;
-	SDL_Renderer* renderer;
+	
+	// The main window to render the game to
+	SDL_Window* mainWindow;
 
+	// The OpenGL context
+	SDL_GLContext mainContext;
+
+	// The game SDL Renderer
+	SDL_Renderer* renderer;
 };
 
 #endif
-

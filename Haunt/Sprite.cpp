@@ -5,6 +5,7 @@ Sprite.cpp
 =================
 */
 #include "Sprite.h"
+
 /*
 =================
 - Data constructor initializes the Sprite to the data passed to
@@ -12,23 +13,22 @@ Sprite.cpp
 - Is always called, thus ensures all sprite objects are in a consistent state.
 =================
 */
-Sprite::Sprite() 			// Default constructor
+Sprite::Sprite() // Default constructor
 {
-
-	this->spritePosition = { 0, 0, 0, 0 };
-	this->spriteTexture = NULL;
+	this->spritePosition = {0, 0, 0, 0};
+	this->spriteTexture = nullptr;
 	this->spriteCentre = {0, 0};
-	this->spriteScale = { 1, 1 };
+	this->spriteScale = {1, 1};
 	this->spriteRotationAngle = 0;
 }
 
-Sprite::Sprite(Texture* theSpriteTexture) 			// Default constructor
+Sprite::Sprite(Texture* theSpriteTexture) // Default constructor
 {
 	this->spriteTexture = theSpriteTexture;
-	this->setSpriteDimensions(this->spriteTexture->getTWidth(), this->spriteTexture->getTHeight());
-	this->spritePosition = { 0, 0, this->spriteTexture->getTWidth(), this->spriteTexture->getTHeight() };
-	this->spriteCentre = { this->spritePosition.w / 2, this->spritePosition.h / 2};
-	this->spriteScale = { 1, 1 };
+	this->SetSpriteDimensions(this->spriteTexture->GetTWidth(), this->spriteTexture->GetTHeight());
+	this->spritePosition = {0, 0, this->spriteTexture->GetTWidth(), this->spriteTexture->GetTHeight()};
+	this->spriteCentre = {this->spritePosition.w / 2, this->spritePosition.h / 2};
+	this->spriteScale = {1, 1};
 	this->spriteRotationAngle = 0;
 }
 
@@ -37,16 +37,18 @@ Sprite::Sprite(Texture* theSpriteTexture) 			// Default constructor
 - Destructor
 =================
 */
-Sprite::~Sprite()			// Destructor
+Sprite::~Sprite() // Destructor
 {
 }
+
 /*
 =================
 - Return the sprites current position.
 =================
 */
 
-SDL_Rect Sprite::getSpritePosition()  // Return the sprites current position
+SDL_Rect Sprite::GetSpritePosition() const
+// Return the sprites current position
 {
 	return this->spritePosition;
 }
@@ -57,10 +59,10 @@ SDL_Rect Sprite::getSpritePosition()  // Return the sprites current position
 =================
 */
 
-void Sprite::setSpritePosition(SDL_Point position)  // set the position of the sprite
+void Sprite::SetSpritePosition(const SDL_Point t_position) // set the position of the sprite
 {
-	this->spritePosition.x = position.x;
-	this->spritePosition.y = position.y;
+	this->spritePosition.x = t_position.x;
+	this->spritePosition.y = t_position.y;
 }
 
 /*
@@ -69,7 +71,8 @@ void Sprite::setSpritePosition(SDL_Point position)  // set the position of the s
 =================
 */
 
-Texture* Sprite::getTexture()  // Return the sprites current image
+Texture* Sprite::GetTexture() const
+// Return the sprites current image
 {
 	return this->spriteTexture;
 }
@@ -80,35 +83,38 @@ Texture* Sprite::getTexture()  // Return the sprites current image
 =================
 */
 
-void Sprite::setTexture(Texture* theSpriteTexture)  // set the image of the sprite
+void Sprite::SetTexture(Texture* t_the_sprite_texture) // set the image of the sprite
 {
-	this->spriteTexture = theSpriteTexture;
-	this->setSpriteDimensions(spriteTexture->getTWidth(), spriteTexture->getTHeight());
+	this->spriteTexture = t_the_sprite_texture;
+	this->SetSpriteDimensions(spriteTexture->GetTWidth(), spriteTexture->GetTHeight());
 	this->spritePosition.w = textureWidth;
 	this->spritePosition.h = textureHeight;
-	this->spriteCentre = { this->spritePosition.w / 2, this->spritePosition.h / 2 };
+	this->spriteCentre = {this->spritePosition.w / 2, this->spritePosition.h / 2};
 }
 
 
-void Sprite::render(SDL_Renderer* renderer, SDL_Rect* sourceRect, SDL_Rect* destinationRect, Vector2D scaling)
+void Sprite::Render(SDL_Renderer* t_renderer, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect) const
 {
-	this->spriteTexture->renderTexture(renderer, this->spriteTexture->getTexture(), sourceRect, destinationRect, scaling);
+	this->spriteTexture->RenderTexture(t_renderer, this->spriteTexture->GetTexture(), t_source_rect, t_destination_rect);
 }
 
-void Sprite::render(SDL_Renderer* renderer, SDL_Rect* sourceRect, SDL_Rect* destinationRect, double rotationAngle, SDL_Point* spriteCentre, Vector2D scaling)
+void Sprite::Render(SDL_Renderer* t_renderer, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect, const double rotationAngle,
+					SDL_Point* t_sprite_centre, const Vector2D t_scaling) const
 {
-	this->spriteTexture->renderTexture(renderer, this->spriteTexture->getTexture(), sourceRect, destinationRect, rotationAngle, spriteCentre, scaling);
+	this->spriteTexture->RenderTexture(t_renderer, this->spriteTexture->GetTexture(), t_source_rect, t_destination_rect,
+									   rotationAngle, t_sprite_centre, t_scaling);
 }
+
 /*
 =================
 - Set the sprite dimensions.
 =================
 */
-void Sprite::setSpriteDimensions(int textureWidth, int textureHeight)
+void Sprite::SetSpriteDimensions(const int t_texture_width, const int t_texture_height)
 {
-	this->textureWidth = textureWidth;
-	this->textureHeight = textureHeight;
-	this->spriteDimensions = { 0, 0, textureWidth, textureHeight };
+	this->textureWidth = t_texture_width;
+	this->textureHeight = t_texture_height;
+	this->spriteDimensions = {0, 0, t_texture_width, t_texture_height};
 }
 
 /*
@@ -116,17 +122,19 @@ void Sprite::setSpriteDimensions(int textureWidth, int textureHeight)
 - Get the sprite dimensions.
 =================
 */
-SDL_Rect Sprite::getSpriteDimensions()
+SDL_Rect Sprite::GetSpriteDimensions() const
 {
 	return this->spriteDimensions;
 }
+
 /*
 =================
 - Return the sprite centre.
 =================
 */
 
-SDL_Point Sprite::getSpriteCentre()  // Return the sprites current position
+SDL_Point Sprite::GetSpriteCentre() const
+// Return the sprites current position
 {
 	return this->spriteCentre;
 }
@@ -137,18 +145,20 @@ SDL_Point Sprite::getSpriteCentre()  // Return the sprites current position
 =================
 */
 
-void Sprite::setSpriteCentre(SDL_Point centre)  // set the position of the sprite
+void Sprite::SetSpriteCentre(const SDL_Point t_centre) // set the position of the sprite
 {
-	this->spriteCentre.x = centre.x;
-	this->spriteCentre.y = centre.y;
+	this->spriteCentre.x = t_centre.x;
+	this->spriteCentre.y = t_centre.y;
 }
+
 /*
 =================
 - Return the sprite scaling.
 =================
 */
 
-Vector2D Sprite::getSpriteScale()  // Return the sprites current scaling
+Vector2D Sprite::GetSpriteScale() const
+// Return the sprites current scaling
 {
 	return this->spriteScale;
 }
@@ -159,18 +169,20 @@ Vector2D Sprite::getSpriteScale()  // Return the sprites current scaling
 =================
 */
 
-void Sprite::setSpriteScale(Vector2D scale)  // set the sprites current scaling
+void Sprite::SetSpriteScale(const Vector2D t_scale) // set the sprites current scaling
 {
-	this->spriteScale.X += scale.X;
-	this->spriteScale.Y += scale.Y;
+	this->spriteScale.X += t_scale.X;
+	this->spriteScale.Y += t_scale.Y;
+	ScaleSprite();
 }
+
 /*
 =================
 - Update sprite scale.
 =================
 */
 
-void Sprite::scaleSprite()  // set the sprites current scaling
+void Sprite::ScaleSprite() // set the sprites current scaling
 {
 	// Scale sprite
 	this->spritePosition.w = this->spriteDimensions.w * this->spriteScale.X;
@@ -179,13 +191,15 @@ void Sprite::scaleSprite()  // set the sprites current scaling
 	this->spriteCentre.x = this->spritePosition.w / 2;
 	this->spriteCentre.y = this->spritePosition.h / 2;
 }
+
 /*
 =================
 - Return the sprite rotation Angle.
 =================
 */
 
-float Sprite::getSpriteRotationAngle()  // Return the sprites current scaling
+float Sprite::getSpriteRotationAngle() const
+// Return the sprites current scaling
 {
 	return this->spriteRotationAngle;
 }
@@ -196,7 +210,7 @@ float Sprite::getSpriteRotationAngle()  // Return the sprites current scaling
 =================
 */
 
-void Sprite::setSpriteRotationAngle(float angle)  // set the sprites current scaling
+void Sprite::SetSpriteRotationAngle(const float t_angle) // set the sprites current scaling
 {
-	this->spriteRotationAngle = angle;
+	this->spriteRotationAngle = t_angle;
 }

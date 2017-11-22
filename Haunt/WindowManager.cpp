@@ -5,7 +5,7 @@ cSDL2WNDManager.cpp
 */
 #include "WindowManager.h"
 
-WindowManager* WindowManager::instance = NULL;
+WindowManager* WindowManager::instance = nullptr;
 
 
 /*
@@ -15,20 +15,20 @@ Constructor
 */
 WindowManager::WindowManager()
 {
-
 }
+
 /*
 =================================================================================
 Singleton Design Pattern
 =================================================================================
 */
-WindowManager* WindowManager::getInstance()
+WindowManager* WindowManager::GetInstance()
 {
-	if (instance == NULL)
+	if (instance == nullptr)
 	{
 		instance = new WindowManager();
 	}
-	return WindowManager::instance;
+	return instance;
 }
 
 /*
@@ -39,7 +39,7 @@ WindowManager* WindowManager::getInstance()
 * @param height The height of the window to draw
 =================================================================================
 */
-bool WindowManager::initializeWindow(string windowTitle, int width, int height)
+bool WindowManager::InitializeWindow(string t_window_title, const int t_width, const int t_height)
 {
 	// Initialize SDL's Video subsystem
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -48,64 +48,61 @@ bool WindowManager::initializeWindow(string windowTitle, int width, int height)
 		return false;
 	}
 
-	mainWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		width, height, SDL_WINDOW_OPENGL);
+	mainWindow = SDL_CreateWindow(t_window_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	                              t_width, t_height, SDL_WINDOW_OPENGL);
 
 	// Check that everything worked out okay
 	if (!mainWindow)
 	{
 		cout << "Unable to create window\n";
-		checkSDLError(__LINE__);
+		CheckSdlError(__LINE__);
 		return false;
+	}
+	// Get the renderer
+	renderer = SDL_CreateRenderer(mainWindow, -1, 0);
+
+	if (renderer != nullptr)
+	{
+		cout << "Renderer creation succeeded" << endl;
+
+		SDL_SetRenderDrawColor(renderer, 0, 0, 100, 255);
 	}
 	else
 	{
-		// Get the renderer
-			renderer = SDL_CreateRenderer(mainWindow, -1, 0);
-
-			if (renderer != 0)
-			{
-				std::cout << "Renderer creation succeeded" << std::endl;
-
-				SDL_SetRenderDrawColor(renderer, 0, 0, 100, 255);
-			}
-			else
-			{
-				std::cout << "Renderer creation failed" << std::endl;
-				return false;
-			}
+		cout << "Renderer creation failed" << endl;
+		return false;
 	}
 
 	return true;
 }
 
-void WindowManager::checkSDLError(int line = -1)
+void WindowManager::CheckSdlError(const int t_line = -1)
 {
-	string error = SDL_GetError();
+	const string error = SDL_GetError();
 
 	if (error != "")
 	{
-		cout << "SDL Error : " << error << std::endl;
+		cout << "SDL Error : " << error << endl;
 
-		if (line != -1)
-			cout << "\nLine : " << line << std::endl;
+		if (t_line != -1)
+			cout << "\nLine : " << t_line << endl;
 
 		SDL_ClearError();
 	}
 }
 
 
-SDL_Window* WindowManager::getWindow()
+SDL_Window* WindowManager::GetWindow() const
 {
 	return mainWindow;
 }
 
-SDL_GLContext WindowManager::getOpenGLContext()
+SDL_GLContext WindowManager::GetOpenGlContext() const
 {
 	return mainContext;
 }
 
-SDL_Renderer* WindowManager::getSDLRenderer()
+SDL_Renderer* WindowManager::GetSdlRenderer() const
 {
 	return renderer;
 }

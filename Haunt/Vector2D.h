@@ -1,77 +1,111 @@
 #ifndef _VECTOR2D_H
 #define _VECTOR2D_H
 
+
 #include "GameConstants.h";
 
-typedef struct Vector2D
+struct Vector2D
 {
-	float  X;
-	float  Y;
+	float X;
+	float Y;
+
+	Vector2D()
+	{
+		this->X = 0;
+		this->Y = 0;
+	}
+
+	Vector2D(const double t_new_x, const double t_new_y)
+	{
+		this->X = t_new_x;
+		this->Y = t_new_y;
+	}
 
 	// Get the dot product of two 2D vectors
-	static int dotProduct(Vector2D vector1, Vector2D vector2)
+	static int DotProduct(const Vector2D t_vector1, const Vector2D t_vector2)
 	{
-		return ((vector1.X * vector2.X) + (vector1.Y * vector2.Y));
+		return ((t_vector1.X * t_vector2.X) + (t_vector1.Y * t_vector2.Y));
 	}
 
 	// Get the andgle between two 2D vectors
-	static float getAngle(Vector2D vector1, Vector2D vector2)
+	static float GetAngle(Vector2D t_vector1, Vector2D t_vector2)
 	{
-		int dotProduct = Vector2D::dotProduct(vector1, vector2);
+		const int dotProduct = Vector2D::DotProduct(t_vector1, t_vector2);
 
-		float cos = dotProduct / (vector1.getLength() * vector2.getLength());
+		const float cos = dotProduct / (t_vector1.GetLength() * t_vector2.GetLength());
 
 		return acos(cos);
 	}
 
+	static Vector2D Lerp(const Vector2D t_vector1, const Vector2D t_vector2, const double t)
+	{
+		return (t_vector1 * (1 - t)) + (t_vector2 * t);
+	}
+
 	// Get the length of the current 2D vector
-	float getLength()
+	float GetLength() const
 	{
 		return sqrt((X * X) + (Y * Y));
 	}
 
-	Vector2D operator +(const Vector2D other)
+	Vector2D operator +(const Vector2D t_other) const
 	{
 		Vector2D newVector;
-		newVector.X = this->X + other.X;
-		newVector.Y = this->Y + other.Y;
+		newVector.X = this->X + t_other.X;
+		newVector.Y = this->Y + t_other.Y;
 
 		return newVector;
 	}
 
-	Vector2D operator -(const Vector2D other)
+	Vector2D operator -(const Vector2D t_other) const
 	{
 		Vector2D newVector;
-		newVector.X = this->X - other.X;
-		newVector.Y = this->Y - other.Y;
+		newVector.X = this->X - t_other.X;
+		newVector.Y = this->Y - t_other.Y;
 
 		return newVector;
 	}
 
-	Vector2D operator *(const float other)
+	Vector2D operator *(const float t_other) const
 	{
 		Vector2D newVector;
-		newVector.X = this->X * other;
-		newVector.Y = this->Y * other;
+		newVector.X = this->X * t_other;
+		newVector.Y = this->Y * t_other;
 
 		return newVector;
 	}
 
-	Vector2D operator /(const float other)
+	Vector2D operator /(const float t_other) const
 	{
 		Vector2D newVector;
-		newVector.X = this->X / other;
-		newVector.Y = this->Y / other;
+		newVector.X = this->X / t_other;
+		newVector.Y = this->Y / t_other;
 
 		return newVector;
+	}
+
+	static int CompareX(const Vector2D t_first_vector, const Vector2D t_second_vector)
+	{
+		if (t_first_vector.X < t_second_vector.X)
+		{
+			return -1;
+		}
+		else if (t_first_vector.X > t_second_vector.X)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 };
 
 // Found solution on stack overflow, thanks to user 616700/erik
-inline std::ostream& operator<<(std::ostream& string, Vector2D const& vectorToOutput)
+inline ostream& operator<<(ostream& t_string, Vector2D const& t_vector_to_output)
 {
-	string << "[ " << vectorToOutput.X << "; " << vectorToOutput.Y << " ]" << endl;
-	return string;
+	t_string << "[ " << t_vector_to_output.X << "; " << t_vector_to_output.Y << " ]" << endl;
+	return t_string;
 }
 
 #endif // !_VECTOR2D_H
