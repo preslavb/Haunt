@@ -2,23 +2,23 @@
 #include "Game.h"
 
 // Constructors, using the Dynamic constructors
-Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use)
+Character::Character(GLuint* t_texture_to_use) : Dynamic(t_texture_to_use)
 {
 	this->health = 100;
 }
 
-Character::Character(Texture* t_texture_to_use, const Vector2D t_new_position) : Dynamic(t_texture_to_use, t_new_position)
+Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position) : Dynamic(t_texture_to_use, t_new_position)
 {
 	this->health = 100;
 }
 
-Character::Character(Texture* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation) : Dynamic(
+Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
 	this->health = 100;
 }
 
-Character::Character(Texture* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
+Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
 	this->health = t_new_health;
@@ -30,7 +30,6 @@ Character::~Character()
 
 void Character::MoveRight()
 {
-	cout << "Holding Key" << endl;
 	this->isMovingRight = true;
 	this->isMoving = true;
 
@@ -47,7 +46,6 @@ void Character::MoveRight()
 
 void Character::MoveLeft()
 {
-	cout << "Holding Key" << endl;
 	this->isMovingLeft = true;
 	this->isMoving = true;
 
@@ -131,8 +129,6 @@ void Character::Update(const float t_delta_time)
 
 	// Jump can only happen in the frame that it was pressed, so disable it afterwards
 	hasJumped = false;
-
-	cout << acceleration;
 }
 
 void Character::Damage(const int t_amount_of_damage)

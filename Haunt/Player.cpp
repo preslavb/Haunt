@@ -1,17 +1,17 @@
 #include "Player.h"
 #include "GameConstants.h"
 
-Player::Player(Texture* t_texture_to_use) : Character(t_texture_to_use)
+Player::Player(GLuint* t_texture_to_use) : Character(t_texture_to_use)
 {
 	HookInputEvent();
 }
 
-Player::Player(Texture* t_texture_to_use, const Vector2D t_new_position) : Character(t_texture_to_use, t_new_position)
+Player::Player(GLuint* t_texture_to_use, const Vector2D t_new_position) : Character(t_texture_to_use, t_new_position)
 {
 	HookInputEvent();
 }
 
-Player::Player(Texture* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation) : Character(
+Player::Player(GLuint* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation) : Character(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
 	HookInputEvent();

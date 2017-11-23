@@ -8,11 +8,7 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
-#include <SDL.h>
-// Image Texture loading library
-#include <SDL_image.h>
-// Font loading library
-#include <SDL_ttf.h>
+#include <SDL/SDL.h>
 // Maths functions
 #include <math.h>
 #define _PI 3.14159265

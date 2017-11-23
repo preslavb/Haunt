@@ -2,7 +2,7 @@
 #define WIN32_EXTRA_LEAN
 
 // SDL2 Headers
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include "WindowManager.h"
 #include "Game.h"
@@ -20,9 +20,9 @@ int main(int argc, char* argv[])
 	if (!windowManager->InitializeWindow(_WINDOW_TITLE, _WINDOW_WIDTH, _WINDOW_HEIGHT))
 		return -1;
 
-	game->Initialise(windowManager->GetWindow(), windowManager->GetSdlRenderer());
+	game->Initialise(windowManager->GetWindow());
 
-	game->Run(windowManager->GetWindow(), windowManager->GetSdlRenderer());
+	game->Run(windowManager->GetWindow());
 
 	game->CleanUp(windowManager->GetWindow());
 

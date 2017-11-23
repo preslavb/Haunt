@@ -1,7 +1,7 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-#include <SDL.h>
+#include <GL/glew.h>
 
 // Includes used throughout the whole game
 #include "GameIncludes.h"
@@ -17,17 +17,17 @@ public:
 	Game();
 
 	// Initialise logic, container for any other classes' initialisations
-	void Initialise(SDL_Window* t_window, SDL_Renderer* t_renderer);
+	void Initialise(SDL_Window* t_window);
 
 	// The main game loop
-	void Run(SDL_Window* t_window, SDL_Renderer* t_renderer);
+	void Run(SDL_Window* t_window);
 
 	// Clean up before closing the window and the game
 	static void CleanUp(SDL_Window* t_window);
 
 	// Render logic for displaying items on the screen
-	void Render(SDL_Window* t_window, SDL_Renderer* t_renderer) const;
-	static void Render(SDL_Renderer* t_renderer);
+	void Render(SDL_Window* t_window) const;
+	static void Render();
 
 	// Update loop for any model updates before render
 	static void Update();
@@ -43,6 +43,8 @@ public:
 private:
 	// The singleton instance of the game
 	static Game* instance;
+
+	GLSLProgram colorProgram;
 
 	// The time recorded last frame
 	float lastTime;

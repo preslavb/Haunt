@@ -12,9 +12,9 @@ private:
 	void HookInputEvent();
 public:
 	// Constructors
-	Player(Texture* t_texture_to_use);
-	Player(Texture* t_texture_to_use, Vector2D t_new_position);
-	Player(Texture* t_texture_to_use, Vector2D t_new_position, float t_new_rotation);
+	Player(GLuint* t_texture_to_use);
+	Player(GLuint* t_texture_to_use, Vector2D t_new_position);
+	Player(GLuint* t_texture_to_use, Vector2D t_new_position, float t_new_rotation);
 	~Player();
 
 	// Update logic for the player, based on the time passed from the last frame

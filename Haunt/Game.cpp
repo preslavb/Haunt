@@ -21,24 +21,26 @@ Game* Game::GetInstance()
 }
 
 // Initialise all game variables and renderer before the game loop starts
-void Game::Initialise(SDL_Window* t_window, SDL_Renderer* t_renderer)
+void Game::Initialise(SDL_Window* t_window)
 {
 	lastTime = 0;
-
-	// Clear the buffer with a black background
-	SDL_SetRenderDrawColor(t_renderer, 255, 0, 0, 255);
-	SDL_RenderPresent(t_renderer);
-
-	textureManager->SetRenderer(t_renderer);
 	textureManager->Initialise();
 
 	Vector2D newVector;
 
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), Vector2D(624, 410)));
 	gameObjects.push_back(new Player(textureManager->GetTexture("grass"), Vector2D(500, 500)));
+
+	colorProgram.CompileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
+
+	colorProgram.AddAttribute("vertexPosition");
+	colorProgram.AddAttribute("vertexColor");
+	colorProgram.AddAttribute("vertexUV");
+
+	colorProgram.LinkShaders();
 }
 
-void Game::Run(SDL_Window* t_window, SDL_Renderer* t_renderer)
+void Game::Run(SDL_Window* t_window)
 {
 	bool loop = true;
 
@@ -50,32 +52,46 @@ void Game::Run(SDL_Window* t_window, SDL_Renderer* t_renderer)
 		loop = inputHandler->Update(loop);
 		this->Update();
 		this->Update(elapsedTime);
-		this->Render(t_window, t_renderer);
+		this->Render(t_window);
 	}
 }
 
-void Game::Render(SDL_Window* t_window, SDL_Renderer* t_renderer) const
+void Game::Render(SDL_Window* t_window) const
 {
-	SDL_RenderClear(t_renderer);
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for each (GameObject* gameObject in gameObjects)
 	{
-		gameObject->Render(t_renderer);
+		gameObject->Render();
 	}
 
-	SDL_RenderPresent(t_renderer);
+	Game::GetInstance()->colorProgram.Use();
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, *TextureManager::GetInstance()->GetTexture("theBackground"));
+	GLint textureLocation = Game::GetInstance()->colorProgram.GetUniformLocation("mySampler");
+	glUniform1i(textureLocation, 0);
+
+	Sprite testSprite;
+	testSprite.Initialize(-1, 0, 1, 1);
+	testSprite.Render();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	SDL_GL_SwapWindow(t_window);
 }
 
-void Game::Render(SDL_Renderer* t_renderer)
+void Game::Render()
 {
-	SDL_RenderPresent(t_renderer);
 }
 
 // Updates detatched from timing (frame based)
 void Game::Update()
 {
 	CoroutineManager<bool>::Update();
-	cout << "Frame: ";
+	InputHandler::GetInstance()->Update(true);
 }
 
 void Game::Update(float t_delta_time)
