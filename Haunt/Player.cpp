@@ -1,5 +1,6 @@
 #include "Player.h"
-#include "GameConstants.h"
+#include "KeyState.h"
+#include "InputHandler.h"
 
 Player::Player(GLuint* t_texture_to_use) : Character(t_texture_to_use)
 {
