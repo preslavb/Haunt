@@ -1,7 +1,7 @@
 #ifndef _CHARACTER_H
 #define _CHARACTER_H
 
-#include "Dynamic.h"
+#include <Engine/Dynamic.h>
 
 // Constants for use in physics calculations
 // Acceleration limit
@@ -32,10 +32,10 @@ protected:
 	bool isMovingLeft;
 public:
 	// Constructors taking in a texture, position (optional) ,rotation(optional) and health(optional)
-	Character(GLuint* t_texture_to_use);
-	Character(GLuint* t_texture_to_use, Vector2D t_new_position);
-	Character(GLuint* t_texture_to_use, Vector2D t_new_position, float t_new_rotation);
-	Character(GLuint* t_texture_to_use, Vector2D t_new_position, float t_new_rotation, int t_new_health);
+	Character(Texture* t_texture_to_use);
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position);
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health);
 
 	// Destructor
 	~Character();

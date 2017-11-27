@@ -1,11 +1,11 @@
 #ifndef _GAME_H
 #define _GAME_H
 
-#include <GL/glew.h>
-
-// Includes used throughout the whole game
-#include "GameIncludes.h"
-#include "GameObject.h"
+#include "Player.h"
+#include <Engine/GameObject.h>
+#include <Engine/TextureManager.h>
+#include <Engine/Camera2D.h>
+#include <Engine/SpriteBatch.h>
 
 using namespace std;
 
@@ -43,6 +43,8 @@ public:
 private:
 	// The singleton instance of the game
 	static Game* instance;
+	Camera2D camera;
+	SpriteBatch spriteBatch;
 
 	GLSLProgram colorProgram;
 

@@ -2,23 +2,23 @@
 #include "Game.h"
 
 // Constructors, using the Dynamic constructors
-Character::Character(GLuint* t_texture_to_use) : Dynamic(t_texture_to_use)
+Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use)
 {
 	this->health = 100;
 }
 
-Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position) : Dynamic(t_texture_to_use, t_new_position)
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Dynamic(t_texture_to_use, t_new_position)
 {
 	this->health = 100;
 }
 
-Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation) : Dynamic(
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
 	this->health = 100;
 }
 
-Character::Character(GLuint* t_texture_to_use, const Vector2D t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
 	this->health = t_new_health;
@@ -35,11 +35,11 @@ void Character::MoveRight()
 
 	if (!(isMovingLeft))
 	{
-		this->velocity.X = baseSpeed;
+		this->velocity.x = baseSpeed;
 
-		if (this->acceleration.X < MAX_ACCELERATION)
+		if (this->acceleration.x < MAX_ACCELERATION)
 		{
-			this->acceleration.X += RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
+			this->acceleration.x += RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
 		}
 	}
 }
@@ -51,11 +51,11 @@ void Character::MoveLeft()
 
 	if (!(isMovingRight))
 	{
-		this->velocity.X = -baseSpeed;
+		this->velocity.x = -baseSpeed;
 
-		if (this->acceleration.X > -MAX_ACCELERATION)
+		if (this->acceleration.x > -MAX_ACCELERATION)
 		{
-			this->acceleration.X -= RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
+			this->acceleration.x -= RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
 		}
 	}
 }
@@ -73,15 +73,15 @@ void Character::Jump()
 	{
 		this->grounded = false;
 		this->hasJumped = true;
-		this->velocity.Y = -JUMP_FORCE;
+		this->velocity.y = -JUMP_FORCE;
 	}
 }
 
 void Character::LimitJump()
 {
-	if (!grounded && velocity.Y < -JUMP_LIMIT)
+	if (!grounded && velocity.y < -JUMP_LIMIT)
 	{
-		velocity.Y = -JUMP_LIMIT;
+		velocity.y = -JUMP_LIMIT;
 	}
 }
 
@@ -91,37 +91,37 @@ void Character::Update(const float t_delta_time)
 	if (!isMoving)
 	{
 		// If the character would start accelerating the opposite direction the next frame (non deliberately), stop them from doing so by setting their acceleration to 0
-		if (this->acceleration.X - _FRICTION * _METER * Vector2D::CompareX(acceleration, Vector2D(0, 0)) * t_delta_time < 0 && Vector2D::CompareX(acceleration, Vector2D(0, 0)) >= 0)
+		if (this->acceleration.x - _FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time < 0 && ::Compare(acceleration.x, 0) >= 0)
 		{
-			acceleration.X = 0;
+			acceleration.x = 0;
 		}
-		else if (this->acceleration.X - (_FRICTION * _METER * Vector2D::CompareX(acceleration, Vector2D(0, 0)) * t_delta_time) > 0 && Vector2D::CompareX(acceleration, Vector2D(0, 0)) < 0)
+		else if (this->acceleration.x - (_FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time) > 0 && ::Compare(acceleration.x, 0) < 0)
 		{
-			acceleration.X = 0;
+			acceleration.x = 0;
 		}
 		// Otherwise, apply friction to their acceleration value
 		else
 		{
-			this->acceleration.X -= _FRICTION * _METER * Vector2D::CompareX(acceleration, Vector2D(0, 0)) * t_delta_time;
-			this->velocity.X = acceleration.X;
+			this->acceleration.x -= _FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time;
+			this->velocity.x = acceleration.x;
 		}
 	}
 
 	// If the character has hit the ground, stop applying gravity to them
-	if (this->GetPosition().Y > 600 && !hasJumped)
+	if (this->GetPosition().y > 600 && !hasJumped)
 	{
 		grounded = true;
-		this->SetPosition(Vector2D(this->GetPosition().X, 600));
+		this->SetPosition(glm::vec2(this->GetPosition().x, 600));
 	}
 
 	// If the character is not grounded, apply the force of gravity, based on the time since the last frame. If they are, set their y velocity to 0
 	if (!grounded)
 	{
-		this->velocity.Y += _GRAVITY * _METER * t_delta_time;
+		this->velocity.y += _GRAVITY * _METER * t_delta_time;
 	}
 	else
 	{
-		this->velocity.Y = 0;
+		this->velocity.y = 0;
 	}
 
 	// Move the character based on their velocity and acceleration

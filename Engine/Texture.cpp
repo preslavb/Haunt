@@ -100,7 +100,7 @@ bool Texture::LoadTexture(const LPCSTR t_file_name) // create the texture for us
 - return the texture.
 =================
 */
-GLuint* Texture::GetTexture()
+GLuint* Texture::GetTextureID()
 // return the texture.
 {
 	return &glTextureId;
@@ -136,13 +136,11 @@ int Texture::GetTHeight() const
 void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
 							SDL_Rect* t_destination_rect)
 {
-	//SDL_RenderSetScale(renderer, scaling.X, scaling.Y);
 	SDL_RenderCopy(t_renderer, t_texture, t_source_rect, t_destination_rect);
 }
 
 void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
-							SDL_Rect* t_destination_rect, const double rotationAngle, SDL_Point* t_sprite_centre, Vector2D t_scaling)
+							SDL_Rect* t_destination_rect, const double t_rotation_angle, SDL_Point* t_sprite_centre, float t_scaling)
 {
-	//SDL_RenderSetScale(renderer, scaling.X, scaling.Y);
-	SDL_RenderCopyEx(t_renderer, t_texture, t_source_rect, t_destination_rect, rotationAngle, t_sprite_centre, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(t_renderer, t_texture, t_source_rect, t_destination_rect, t_rotation_angle, t_sprite_centre, SDL_FLIP_NONE);
 }

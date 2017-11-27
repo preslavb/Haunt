@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera2D.h" />
     <ClInclude Include="Coroutine.h" />
     <ClInclude Include="CoroutineManager.h" />
     <ClInclude Include="Dynamic.h" />
@@ -167,15 +168,16 @@
     <ClInclude Include="IOManager.h" />
     <ClInclude Include="KeyState.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Vector2D.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Dynamic.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -184,6 +186,7 @@
     <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="KeyState.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />

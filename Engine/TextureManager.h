@@ -40,8 +40,8 @@ public:
 
 	// Accessors to the Textures
 	Texture* AddTexture(LPCSTR t_texture_name, LPCSTR t_file_name);
-	GLuint* GetTexture(LPCSTR t_texture_name);
-	GLuint* GetTexture(const int t_texture_index);
+	Texture* GetTexture(LPCSTR t_texture_name);
+	Texture* GetTexture(const int t_texture_index);
 
 	// Delete all textures
 	void DeleteTextures();

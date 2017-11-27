@@ -4,7 +4,7 @@
 // SDL2 Headers
 #include <SDL/SDL.h>
 
-#include "WindowManager.h"
+#include <Engine/WindowManager.h>
 #include "Game.h"
 
 using namespace std;

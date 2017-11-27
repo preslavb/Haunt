@@ -8,28 +8,28 @@ class Dynamic : public GameObject
 {
 protected:
 	// Acceleration applied to velocity and incremented each frame
-	Vector2D acceleration;
+	glm::vec2 acceleration;
 
 	// Current velocity of the object
-	Vector2D velocity;
+	glm::vec2 velocity;
 
 	// Whether the object is on the ground
 	bool grounded;
 public:
 	// Constructors taking in a texture, position (optional) and rotation(optional)
-	Dynamic(GLuint* t_texture_to_use);
-	Dynamic(GLuint* t_texture_to_use, Vector2D t_new_position);
-	Dynamic(GLuint* t_texture_to_use, Vector2D t_new_position, float t_new_rotation);
+	Dynamic(Texture* t_texture_to_use);
+	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position);
+	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
 	~Dynamic();
 
 	// Accessors to velocity and acceleration
-	Vector2D GetVelocity() const;
-	Vector2D GetAcceleration() const;
-	void SetVelocity(Vector2D t_new_velocity);
-	void SetAcceleration(Vector2D t_new_acceleration);
+	glm::vec2 GetVelocity() const;
+	glm::vec2 GetAcceleration() const;
+	void SetVelocity(glm::vec2 t_new_velocity);
+	void SetAcceleration(glm::vec2 t_new_acceleration);
 
 	// Move the object by offsetting them with a Vector2D value
-	void Move(const Vector2D t_offset);
+	void Move(const glm::vec2 t_offset);
 
 	// Update logic for any dynamic objects
 	void Update(float t_delta_time) override;

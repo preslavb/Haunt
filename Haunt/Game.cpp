@@ -1,7 +1,5 @@
 #include "Game.h"
 
-#include "Player.h"
-
 // Singleton Class Structure
 Game* Game::instance = nullptr;
 static TextureManager* textureManager = TextureManager::GetInstance();
@@ -25,11 +23,12 @@ void Game::Initialise(SDL_Window* t_window)
 {
 	lastTime = 0;
 	textureManager->Initialise();
+	spriteBatch.Initialize();
 
-	Vector2D newVector;
+	glm::vec2 newVector;
 
-	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), Vector2D(624, 410)));
-	gameObjects.push_back(new Player(textureManager->GetTexture("grass"), Vector2D(500, 500)));
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(0, 0)));
+	gameObjects.push_back(new Player(textureManager->GetTexture("grass"), glm::vec2(500, 500)));
 
 	colorProgram.CompileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
 
@@ -38,6 +37,8 @@ void Game::Initialise(SDL_Window* t_window)
 	colorProgram.AddAttribute("vertexUV");
 
 	colorProgram.LinkShaders();
+
+	camera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
 }
 
 void Game::Run(SDL_Window* t_window)
@@ -61,24 +62,29 @@ void Game::Render(SDL_Window* t_window) const
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for each (GameObject* gameObject in gameObjects)
-	{
-		gameObject->Render();
-	}
+	instance->colorProgram.Use();
 
-	Game::GetInstance()->colorProgram.Use();
+	GLint cameraLocation = Game::GetInstance()->colorProgram.GetUniformLocation("projectionMatrix");
+	glm::mat4 cameraMatrix = camera.GetCameraMatrix();
+	glUniformMatrix4fv(cameraLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	glActiveTexture(GL_TEXTURE0);
+	instance->spriteBatch.Begin();
 
-	glBindTexture(GL_TEXTURE_2D, *TextureManager::GetInstance()->GetTexture("theBackground"));
-	GLint textureLocation = Game::GetInstance()->colorProgram.GetUniformLocation("mySampler");
-	glUniform1i(textureLocation, 0);
+	glm::vec4 position(0.0f, 0.0f, 700.0f, 500.0f);
+	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 
-	Sprite testSprite;
-	testSprite.Initialize(-1, 0, 1, 1);
-	testSprite.Render();
+	GLuint* texture = TextureManager::GetInstance()->GetTexture("theBackground")->GetTextureID();
+	Color tint;
+	tint.R = 255;
+	tint.G = 255;
+	tint.B = 255;
+	tint.A = 255;
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	instance->spriteBatch.Draw(position, uv, *texture, 0, tint);
+
+	instance->spriteBatch.End();
+
+	instance->spriteBatch.RenderABatch();
 
 	SDL_GL_SwapWindow(t_window);
 }
@@ -96,11 +102,14 @@ void Game::Update()
 
 void Game::Update(float t_delta_time)
 {
+	camera.Update();
+
 	for each (GameObject* gameObject in gameObjects)
 	{
 		gameObject->Update();
 		gameObject->Update(t_delta_time);
 	}
+
 	this->frames++;
 	this->runTime += t_delta_time;
 	this->framerate = frames / runTime;

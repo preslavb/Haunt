@@ -74,22 +74,22 @@ void TextureManager::DeleteTextures()
 	}
 }
 
-GLuint* TextureManager::GetTexture(const LPCSTR t_texture_name)
+Texture* TextureManager::GetTexture(const LPCSTR t_texture_name)
 {
 	const map<LPCSTR, Texture*>::iterator textureIterator = texturesMap.find(t_texture_name);
 	if (textureIterator != texturesMap.end())
 	{
-		return textureIterator->second->GetTexture();
+		return textureIterator->second;
 	}
 	return nullptr;
 }
 
-GLuint* TextureManager::GetTexture(const int t_texture_index)
+Texture* TextureManager::GetTexture(const int t_texture_index)
 {
 	const map<LPCSTR, Texture*>::iterator textureIterator = texturesMap.find(TextureNames[t_texture_index]);
 	if (textureIterator != texturesMap.end())
 	{
-		return textureIterator->second->GetTexture();
+		return textureIterator->second;
 	}
 	return nullptr;
 }
