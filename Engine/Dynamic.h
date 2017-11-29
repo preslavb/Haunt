@@ -20,6 +20,7 @@ public:
 	Dynamic(Texture* t_texture_to_use);
 	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position);
 	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
+	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	~Dynamic();
 
 	// Accessors to velocity and acceleration

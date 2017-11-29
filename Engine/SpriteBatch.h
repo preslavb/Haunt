@@ -4,8 +4,9 @@
 #include "Vertex.h"
 #include "glm/glm.hpp"
 #include <vector>
+#include "GameObject.h"
 
-enum class GlyphSortType
+enum class QuadSortType
 {
 	NONE,
 	FRONT_TO_BACK,
@@ -13,7 +14,7 @@ enum class GlyphSortType
 	TEXTURE
 };
 
-struct Glyph
+struct SpriteQuad
 {
 	GLuint Texture;
 	float Depth;
@@ -44,28 +45,29 @@ public:
 
 	void Initialize();
 
-	void Begin(GlyphSortType t_sort_type = GlyphSortType::TEXTURE);
+	void Begin(QuadSortType t_sort_type = QuadSortType::TEXTURE);
 	void End();
 
 	void Draw(const glm::vec4& t_dest_rect, const glm::vec4& t_uv_rect, GLuint t_texture, float t_depth, Color t_color);
+	void Draw(GameObject* t_game_object, Color t_tint_to_use);
 
-	void RenderABatch();
+	void RenderBatches();
 
 private:
 	void CreateRenderBatches();
 	void CreateVertexArray();
-	void SortGlyphs();
+	void SortQuads();
 
-	static bool CompareFrontToBack(Glyph* t_first, Glyph* t_second);
-	static bool CompareBackToFront(Glyph* t_first, Glyph* t_second);
-	static bool CompareTexture(Glyph* t_first, Glyph* t_second);
+	static bool CompareFrontToBack(SpriteQuad* t_first, SpriteQuad* t_second);
+	static bool CompareBackToFront(SpriteQuad* t_first, SpriteQuad* t_second);
+	static bool CompareTexture(SpriteQuad* t_first, SpriteQuad* t_second);
 
-	GlyphSortType sortType;
+	QuadSortType sortType;
 
 	GLuint vertexBufferObject;
 	GLuint vertexArrayObject;
 
-	std::vector<Glyph*> glyphs;
+	std::vector<SpriteQuad*> quads;
 	std::vector<RenderBatch> renderBatches;
 };
 

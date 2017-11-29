@@ -8,6 +8,13 @@ struct Position
 
 struct Color
 {
+	Color() : R(255), G(255), B(255), A(255)
+	{
+	}
+	Color(GLubyte t_new_r, GLubyte t_new_g, GLubyte t_new_b, GLubyte t_new_a) : R(t_new_r), G(t_new_g), B(t_new_b), A(t_new_a)
+	{
+	}
+
 	GLubyte R;
 	GLubyte G;
 	GLubyte B;

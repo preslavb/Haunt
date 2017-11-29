@@ -55,7 +55,7 @@ bool Texture::LoadTexture(const LPCSTR t_file_name) // create the texture for us
 	// Check the Texture has been created from the surface
 	if (sdlTextureId != nullptr)
 	{
-		cout << "Texture '" << t_file_name << "' successfully loaded." << endl;
+		std::cout << "Texture '" << t_file_name << "' successfully loaded. " << (int)sdlTextureId->format->BitsPerPixel << endl;
 
 		GLuint glTexture;
 
@@ -63,7 +63,9 @@ bool Texture::LoadTexture(const LPCSTR t_file_name) // create the texture for us
 
 		glBindTexture(GL_TEXTURE_2D, glTexture);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sdlTextureId->w, sdlTextureId->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, sdlTextureId->pixels);
+		int mode = (int)sdlTextureId->format->BitsPerPixel == 32 ? GL_RGBA : GL_RGB;
+
+		glTexImage2D(GL_TEXTURE_2D, 0, mode, sdlTextureId->w, sdlTextureId->h, 0, mode, GL_UNSIGNED_BYTE, sdlTextureId->pixels);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
@@ -111,7 +113,7 @@ GLuint* Texture::GetTextureID()
 - Return width of texture.
 =================
 */
-int Texture::GetTWidth() const
+int Texture::GetTextureWidth() const
 // Return width of texture;
 {
 	return sdlTextureId->clip_rect.w;
@@ -122,25 +124,18 @@ int Texture::GetTWidth() const
 - Return height of texture.
 =================
 */
-int Texture::GetTHeight() const
+int Texture::GetTextureHeight() const
 // Return height of texture;
 {
 	return sdlTextureId->clip_rect.h;
 }
 
-/*
-=================
-- Render the texture.
-=================
-*/
-void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
-							SDL_Rect* t_destination_rect)
+int Texture::GetDepth()
 {
-	SDL_RenderCopy(t_renderer, t_texture, t_source_rect, t_destination_rect);
+	return depth;
 }
 
-void Texture::RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect,
-							SDL_Rect* t_destination_rect, const double t_rotation_angle, SDL_Point* t_sprite_centre, float t_scaling)
+void Texture::SetDepth(const int t_new_depth)
 {
-	SDL_RenderCopyEx(t_renderer, t_texture, t_source_rect, t_destination_rect, t_rotation_angle, t_sprite_centre, SDL_FLIP_NONE);
+	depth = t_new_depth;
 }

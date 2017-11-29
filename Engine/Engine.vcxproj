@@ -165,9 +165,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="IOManager.h" />
     <ClInclude Include="KeyState.h" />
-    <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -183,9 +181,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="InputHandler.cpp" />
-    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="KeyState.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Texture.cpp" />

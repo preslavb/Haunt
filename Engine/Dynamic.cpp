@@ -10,6 +10,10 @@ Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Ga
 {
 }
 
+Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : GameObject(t_texture_to_use, t_new_position, t_new_depth)
+{
+}
+
 Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : GameObject(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {

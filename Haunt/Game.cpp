@@ -28,7 +28,9 @@ void Game::Initialise(SDL_Window* t_window)
 	glm::vec2 newVector;
 
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(0, 0)));
-	gameObjects.push_back(new Player(textureManager->GetTexture("grass"), glm::vec2(500, 500)));
+	gameObjects[0]->GetTexture()->SetDepth(1);
+	gameObjects.push_back(new Player(textureManager->GetTexture("treelight"), glm::vec2(500, 200)));
+	gameObjects[1]->GetTexture()->SetDepth(0);
 
 	colorProgram.CompileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
 
@@ -38,7 +40,7 @@ void Game::Initialise(SDL_Window* t_window)
 
 	colorProgram.LinkShaders();
 
-	camera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
+	MainCamera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
 }
 
 void Game::Run(SDL_Window* t_window)
@@ -65,26 +67,27 @@ void Game::Render(SDL_Window* t_window) const
 	instance->colorProgram.Use();
 
 	GLint cameraLocation = Game::GetInstance()->colorProgram.GetUniformLocation("projectionMatrix");
-	glm::mat4 cameraMatrix = camera.GetCameraMatrix();
+	glm::mat4 cameraMatrix = MainCamera.GetCameraMatrix();
 	glUniformMatrix4fv(cameraLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	instance->spriteBatch.Begin();
+	instance->spriteBatch.Begin(QuadSortType::BACK_TO_FRONT);
 
-	glm::vec4 position(0.0f, 0.0f, 700.0f, 500.0f);
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 
-	GLuint* texture = TextureManager::GetInstance()->GetTexture("theBackground")->GetTextureID();
 	Color tint;
 	tint.R = 255;
 	tint.G = 255;
 	tint.B = 255;
 	tint.A = 255;
 
-	instance->spriteBatch.Draw(position, uv, *texture, 0, tint);
+	for (GameObject* const gameObject : gameObjects)
+	{
+		instance->spriteBatch.Draw(gameObject, tint);
+	}
 
 	instance->spriteBatch.End();
 
-	instance->spriteBatch.RenderABatch();
+	instance->spriteBatch.RenderBatches();
 
 	SDL_GL_SwapWindow(t_window);
 }
@@ -102,13 +105,13 @@ void Game::Update()
 
 void Game::Update(float t_delta_time)
 {
-	camera.Update();
-
 	for each (GameObject* gameObject in gameObjects)
 	{
 		gameObject->Update();
 		gameObject->Update(t_delta_time);
 	}
+
+	MainCamera.Update();
 
 	this->frames++;
 	this->runTime += t_delta_time;

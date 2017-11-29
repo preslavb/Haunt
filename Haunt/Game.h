@@ -6,6 +6,7 @@
 #include <Engine/TextureManager.h>
 #include <Engine/Camera2D.h>
 #include <Engine/SpriteBatch.h>
+#include "Engine/GLSLProgram.h"
 
 using namespace std;
 
@@ -13,6 +14,9 @@ using namespace std;
 class Game
 {
 public:
+	// The main camera
+	Camera2D MainCamera;
+
 	// Constructor
 	Game();
 
@@ -43,7 +47,7 @@ public:
 private:
 	// The singleton instance of the game
 	static Game* instance;
-	Camera2D camera;
+	
 	SpriteBatch spriteBatch;
 
 	GLSLProgram colorProgram;

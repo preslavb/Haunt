@@ -13,7 +13,7 @@ public:
 
 	void SetPosition(const glm::vec2& t_new_position)
 	{
-		position = t_new_position;
+		position = t_new_position - glm::vec2(screenWidth/2, screenHeight/2);
 		updateMatrix = true;
 	}
 
@@ -25,7 +25,7 @@ public:
 
 	glm::vec2 GetPosition() const
 	{
-		return position;
+		return position + glm::vec2(screenWidth/2, screenHeight/2);
 	}
 
 	float GetScale() const
@@ -61,6 +61,8 @@ public:
 		position.x += 1;
 		updateMatrix = true;
 	}
+
+	void Focus(glm::vec2 t_focus_position);
 
 	void Initialize(int t_new_width, int t_new_height);
 	void Update();

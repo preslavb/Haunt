@@ -83,6 +83,10 @@ bool WindowManager::InitializeWindow(string t_window_title, const int t_width, c
 		fatalError("Could not initialize glew");
 	}
 
+	// Enable alpha blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
 	return true;

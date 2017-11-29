@@ -12,16 +12,16 @@ Camera2D::~Camera2D()
 {
 }
 
+void Camera2D::Focus(glm::vec2 t_focus_position)
+{
+	SetPosition(t_focus_position - glm::vec2(screenWidth / 2, screenHeight / 2));
+}
+
 void Camera2D::Initialize(int t_new_width, int t_new_height)
 {
 	screenWidth = t_new_width;
 	screenHeight = t_new_height;
 	orthographicMatrix = glm::ortho(0.0f, static_cast<float>(screenWidth), 0.0f, static_cast<float>(screenHeight));
-
-	__hook(&KeyState::WhenKeyHeld, InputHandler::GetInstance()->GetKeyStateClass(SDLK_UP), &Camera2D::MoveUp);
-	__hook(&KeyState::WhenKeyHeld, InputHandler::GetInstance()->GetKeyStateClass(SDLK_DOWN), &Camera2D::MoveDown);
-	__hook(&KeyState::WhenKeyHeld, InputHandler::GetInstance()->GetKeyStateClass(SDLK_LEFT), &Camera2D::MoveLeft);
-	__hook(&KeyState::WhenKeyHeld, InputHandler::GetInstance()->GetKeyStateClass(SDLK_RIGHT), &Camera2D::MoveRight);
 
 	updateMatrix = true;
 }

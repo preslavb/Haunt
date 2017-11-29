@@ -18,6 +18,7 @@ public:
 	Player(Texture* t_texture_to_use);
 	Player(Texture* t_texture_to_use, glm::vec2 t_new_position);
 	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
+	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	~Player();
 
 	static Player* GetInstance();

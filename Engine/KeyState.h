@@ -35,6 +35,7 @@ public:
 	// Set the state of the key using an SDL_KEYSTATE (SDL_KEYDOWN, SDL_KEYUP)
 	void SetCurrentState(Uint32 t_sdl_state);
 
+	// The coroutine to run for a held key
 	Coroutine<bool> KeyHeldCoroutine(KeyState* t_key_state);
 
 	// Events to fire for the different states

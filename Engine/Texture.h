@@ -15,16 +15,17 @@ private:
 	int width;
 	int height;
 
+	int depth;
 public:
 	Texture();
 	Texture(LPCSTR t_file_name);
 	~Texture();
 	bool LoadTexture(LPCSTR t_file_name);
-	static void RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect);
-	static void RenderTexture(SDL_Renderer* t_renderer, SDL_Texture* t_texture, SDL_Rect* t_source_rect, SDL_Rect* t_destination_rect,
-	                   double t_rotation_angle, SDL_Point* t_sprite_centre, float t_scaling);
 	GLuint* GetTextureID();
-	int GetTWidth() const;
-	int GetTHeight() const;
+	int GetTextureWidth() const;
+	int GetTextureHeight() const;
+
+	int GetDepth();
+	void SetDepth(const int t_new_depth);
 };
 #endif

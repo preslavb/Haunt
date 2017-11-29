@@ -18,6 +18,12 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 	this->health = 100;
 }
 
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : Dynamic(
+	t_texture_to_use, t_new_position, t_new_depth)
+{
+	this->health = 100;
+}
+
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation)
 {
@@ -73,15 +79,15 @@ void Character::Jump()
 	{
 		this->grounded = false;
 		this->hasJumped = true;
-		this->velocity.y = -JUMP_FORCE;
+		this->velocity.y = JUMP_FORCE;
 	}
 }
 
 void Character::LimitJump()
 {
-	if (!grounded && velocity.y < -JUMP_LIMIT)
+	if (!grounded && velocity.y > JUMP_LIMIT)
 	{
-		velocity.y = -JUMP_LIMIT;
+		velocity.y = JUMP_LIMIT;
 	}
 }
 
@@ -108,16 +114,16 @@ void Character::Update(const float t_delta_time)
 	}
 
 	// If the character has hit the ground, stop applying gravity to them
-	if (this->GetPosition().y > 600 && !hasJumped)
+	if (this->GetPosition().y < 200 && !hasJumped)
 	{
 		grounded = true;
-		this->SetPosition(glm::vec2(this->GetPosition().x, 600));
+		this->SetPosition(glm::vec2(this->GetPosition().x, 200));
 	}
 
 	// If the character is not grounded, apply the force of gravity, based on the time since the last frame. If they are, set their y velocity to 0
 	if (!grounded)
 	{
-		this->velocity.y += _GRAVITY * _METER * t_delta_time;
+		this->velocity.y -= _GRAVITY * _METER * t_delta_time;
 	}
 	else
 	{

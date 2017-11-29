@@ -12,7 +12,7 @@ struct Coroutine
 	// The promise for a value
 	struct promise_type
 	{
-		// The current calculated value
+		// The current calculated value yielded or returned by the body
 		T CurrentValue;
 
 		// Constructor and destructor for the promise
@@ -64,15 +64,17 @@ struct Coroutine
 	using handle_type =	std::experimental::coroutine_handle<promise_type>;
 public:
 	// Constructor for the coroutine object and the state handler instance
-	Coroutine(handle_type h)
-		: Instance(h)
+	Coroutine(handle_type t_handle_type) : Instance(t_handle_type)
 	{
 	}
+
+	// The state handler instance
 	handle_type Instance;
 
 	// Coroutine object destructor
 	~Coroutine()
 	{
+		// Destroy the state handler when the coroutine is no longer in use
 		if (Instance) Instance.destroy();
 	}
 
@@ -96,6 +98,7 @@ public:
 	// The value of the current yield/return
 	T CurrentValue()
 	{
+		// Return the value that the promise calculated
 		return Instance.promise().CurrentValue;
 	}
 
@@ -106,8 +109,7 @@ public:
 		if (not Instance.done())
 		{
 			Instance.resume();
-			auto still_going = not Instance.done();
-			return still_going;
+			return not Instance.done();;
 		}
 		else
 		{

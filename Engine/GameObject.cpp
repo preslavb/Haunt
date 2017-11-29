@@ -9,6 +9,11 @@ GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position
 {
 }
 
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth): rotation(0), texture(t_texture_to_use), position(t_new_position)
+{
+	texture->SetDepth(t_new_depth);
+}
+
 GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), texture(t_texture_to_use)
 {
 }
@@ -49,6 +54,12 @@ glm::vec2 GameObject::GetPosition() const
 	return this->position;
 }
 
+glm::vec4 GameObject::GetRect() const
+{
+	// Return the current position of the object
+	return glm::vec4(position.x, position.y, texture->GetTextureWidth(), texture->GetTextureHeight());
+}
+
 double GameObject::GetRotation() const
 {
 	// Return the current rotation value of the object
@@ -59,6 +70,11 @@ glm::vec2 GameObject::GetScale() const
 {
 	// Return the current scale value of the object
 	return this->scale;
+}
+
+Texture* GameObject::GetTexture()
+{
+	return this->texture;
 }
 
 void GameObject::Update()
@@ -75,8 +91,8 @@ void GameObject::Render(SpriteBatch* t_sprite_batch) const
 {
 	/*newPosition.x = this->position.X - this->sprite.GetSpriteCentre().x;
 	newPosition.y = this->position.Y - this->sprite.GetSpriteCentre().y;
-	newPosition.w = this->sprite.GetTextureID()->GetTWidth();
-	newPosition.h = this->sprite.GetTextureID()->GetTHeight();
+	newPosition.w = this->sprite.GetTextureID()->GetTextureWidth();
+	newPosition.h = this->sprite.GetTextureID()->GetTextureHeight();
 
 	this->sprite.Render(t_renderer, nullptr, &newPosition, this->rotation, &this->sprite.GetSpriteCentre(), this->scale);*/
 

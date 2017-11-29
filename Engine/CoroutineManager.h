@@ -4,6 +4,9 @@
 #include <vector>
 #include "Coroutine.h"
 
+//----------------- Declaration ---------------------------//
+
+// Class to manage all coroutines of type T. Needs to be updated seperately for every return type used in the program.
 template<typename T>
 class CoroutineManager
 {
@@ -29,19 +32,21 @@ public:
 
 //----------------- Implementation ------------------------//
 
+// Initialize the instance of the singleton
 template<typename T>
 CoroutineManager<T>* CoroutineManager<T>::instance = nullptr;
 
+// Constructor
 template<typename T>
 CoroutineManager<T>::CoroutineManager()
 {
-
 }
 
+// Update all coroutines with return type T
 template<typename T>
 void CoroutineManager<T>::Update()
 {
-	// Get the first element iterator of the vector
+	// Get the first element iterator of the coroutines vector
 	typename std::vector<Coroutine<T>>::iterator it = CoroutineManager<T>::GetInstance()->coroutinesStorage.begin();
 
 	// Loop through all of the coroutines stored in storage and update them

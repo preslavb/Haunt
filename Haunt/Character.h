@@ -35,6 +35,7 @@ public:
 	Character(Texture* t_texture_to_use);
 	Character(Texture* t_texture_to_use, glm::vec2 t_new_position);
 	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health);
 
 	// Destructor

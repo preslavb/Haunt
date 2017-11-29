@@ -3,6 +3,7 @@
 
 #include "KeyState.h"
 #include "SDL/SDL.h"
+#include <unordered_map>
 
 // The controls that the game could ever care about
 static const Uint8 REGISTERED_CONTROLS[] = { SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_DOWN };
@@ -15,7 +16,7 @@ private:
 	static InputHandler* instance;
 	
 	// The states of any keys registered in the game (any other keys just get thrown)
-	map<Uint8, KeyState> controlStates;
+	unordered_map<Uint8, KeyState> controlStates;
 public:
 	// Constructor and destructor
 	InputHandler();
