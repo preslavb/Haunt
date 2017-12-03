@@ -44,7 +44,7 @@ TextureManager::~TextureManager()
 void TextureManager::Initialise()
 {
 	// Store the textures
-	for (int tCount = 0; tCount < 9; tCount++)
+	for (int tCount = 0; tCount < min(TexturesToUse.size(), TextureNames.size()); tCount++)
 	{
 		Texture* newTexture = this->AddTexture(TextureNames[tCount], TexturesToUse[tCount]);
 	}

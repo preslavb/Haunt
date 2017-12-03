@@ -33,14 +33,14 @@ public:
 	KeyStates CurrentState = None;
 
 	// Set the state of the key using an SDL_KEYSTATE (SDL_KEYDOWN, SDL_KEYUP)
-	void SetCurrentState(Uint32 t_sdl_state);
+	void SetCurrentState(Uint32 t_sdl_state, float t_delta_time);
 
 	// The coroutine to run for a held key
-	Coroutine<bool> KeyHeldCoroutine(KeyState* t_key_state);
+	Coroutine<bool> KeyHeldCoroutine(KeyState* t_key_state, float t_delta_time);
 
 	// Events to fire for the different states
-	__event void OnKeyPressed();
-	__event void OnKeyReleased();
-	__event void WhenKeyHeld();
+	__event void OnKeyPressed(float t_delta_time);
+	__event void OnKeyReleased(float t_delta_time);
+	__event void WhenKeyHeld(float t_delta_time);
 };
 

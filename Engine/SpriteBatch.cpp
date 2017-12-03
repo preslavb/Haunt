@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SpriteBatch.h"
 #include <algorithm>
+#include "UIElement.h"
 
 
 SpriteBatch::SpriteBatch(): sortType(QuadSortType::TEXTURE), vertexBufferObject(0), vertexArrayObject(0)
@@ -71,6 +72,64 @@ void SpriteBatch::Draw(GameObject* t_game_object, Color t_tint_to_use = Color(25
 	quad->Depth = t_game_object->GetTexture()->GetDepth();
 
 	glm::vec4 destinationRect = t_game_object->GetRect();
+	glm::vec4 uv(0, 0, 1, 1);
+
+
+	quad->TopLeft.Color = t_tint_to_use;
+	quad->TopLeft.SetPosition(destinationRect.x, destinationRect.y + destinationRect.w);
+	quad->TopLeft.SetUV(uv.x, uv.y + uv.w);
+
+	quad->BottomLeft.Color = t_tint_to_use;
+	quad->BottomLeft.SetPosition(destinationRect.x, destinationRect.y);
+	quad->BottomLeft.SetUV(uv.x, uv.y);
+
+	quad->BottomRight.Color = t_tint_to_use;
+	quad->BottomRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y);
+	quad->BottomRight.SetUV(uv.x + uv.z, uv.y);
+
+	quad->TopRight.Color = t_tint_to_use;
+	quad->TopRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y + destinationRect.w);
+	quad->TopRight.SetUV(uv.x + uv.z, uv.y + uv.w);
+
+	quads.push_back(quad);
+}
+
+void SpriteBatch::Draw(UIElement* t_ui_element, Color t_tint_to_use = Color(255, 255, 255, 255))
+{
+	SpriteQuad* quad = new SpriteQuad();
+	quad->Texture = *t_ui_element->GetTexture()->GetTextureID();
+	quad->Depth = t_ui_element->GetTexture()->GetDepth();
+
+	glm::vec4 destinationRect = t_ui_element->GetRect();
+	glm::vec4 uv(0, 0, 1, 1);
+
+
+	quad->TopLeft.Color = t_tint_to_use;
+	quad->TopLeft.SetPosition(destinationRect.x, destinationRect.y + destinationRect.w);
+	quad->TopLeft.SetUV(uv.x, uv.y + uv.w);
+
+	quad->BottomLeft.Color = t_tint_to_use;
+	quad->BottomLeft.SetPosition(destinationRect.x, destinationRect.y);
+	quad->BottomLeft.SetUV(uv.x, uv.y);
+
+	quad->BottomRight.Color = t_tint_to_use;
+	quad->BottomRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y);
+	quad->BottomRight.SetUV(uv.x + uv.z, uv.y);
+
+	quad->TopRight.Color = t_tint_to_use;
+	quad->TopRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y + destinationRect.w);
+	quad->TopRight.SetUV(uv.x + uv.z, uv.y + uv.w);
+
+	quads.push_back(quad);
+}
+
+void SpriteBatch::Draw(Collider* t_collider, Texture* t_texture, Color t_tint_to_use)
+{
+	SpriteQuad* quad = new SpriteQuad();
+	quad->Texture = *t_texture->GetTextureID();
+	quad->Depth = t_texture->GetDepth();
+
+	glm::vec4 destinationRect = glm::vec4(t_collider->GetRect().TopLeft().x, t_collider->GetRect().TopLeft().y, t_collider->GetRect().GetDimensions().x,t_collider->GetRect().GetDimensions().y);
 	glm::vec4 uv(0, 0, 1, 1);
 
 

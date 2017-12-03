@@ -6,6 +6,8 @@ Texture.cpp
 =================
 */
 #include "Texture.h"
+#include "CoroutineManager.h"
+#include "GarbageDestroyer.h"
 
 using namespace std;
 
@@ -39,7 +41,7 @@ Texture::Texture(const LPCSTR t_file_name)
 */
 Texture::~Texture()
 {
-	delete this;
+	//delete this;
 }
 
 /*

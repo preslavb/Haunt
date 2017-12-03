@@ -1,40 +1,66 @@
 #include "Character.h"
 #include "Game.h"
+#include "Engine/CollisionManager.h"
+#include "Engine/GarbageDestroyer.h"
 
-// Constructors, using the Dynamic constructors
-Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use)
+void Character::HookCharacterCollisionEvents()
 {
-	this->health = 100;
+	__hook(&Collider::OnCollision, &mainCollider, &Character::TestCollisionsCharacter);
 }
 
-Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Dynamic(t_texture_to_use, t_new_position)
+void Character::TestCollisionsCharacter()
+{
+	//cout << "Collision on Character" << endl;
+}
+
+// Constructors, using the Dynamic constructors
+Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use), mainCollider(glm::vec2(0, 0), Rect(glm::vec2(0, 0), glm::vec2(50, 50)), this)
 {
 	this->health = 100;
+	colliders.push_back(&mainCollider);
+	HookCharacterCollisionEvents();
+}
+
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Dynamic(t_texture_to_use, t_new_position), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
+{
+	this->health = 100;
+	colliders.push_back(&mainCollider);
+	HookCharacterCollisionEvents();
 }
 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_rotation)
+	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	this->health = 100;
+	colliders.push_back(&mainCollider);
+	HookCharacterCollisionEvents();
 }
 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_depth)
+	t_texture_to_use, t_new_position, t_new_depth), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	this->health = 100;
+	colliders.push_back(&mainCollider);
+	HookCharacterCollisionEvents();
 }
 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_rotation)
+	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	this->health = t_new_health;
+	colliders.push_back(&mainCollider);
+	HookCharacterCollisionEvents();
 }
 
 Character::~Character()
 {
+	for (Collider* collider : colliders)
+	{
+		CollisionManager::GetInstance()->UnregisterCollider(collider);
+	}
 }
 
-void Character::MoveRight()
+void Character::MoveRight(float t_delta_time)
 {
 	this->isMovingRight = true;
 	this->isMoving = true;
@@ -45,12 +71,12 @@ void Character::MoveRight()
 
 		if (this->acceleration.x < MAX_ACCELERATION)
 		{
-			this->acceleration.x += RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
+			this->acceleration.x += RUN_ACCELERATION * _METER * t_delta_time;
 		}
 	}
 }
 
-void Character::MoveLeft()
+void Character::MoveLeft(float t_delta_time)
 {
 	this->isMovingLeft = true;
 	this->isMoving = true;
@@ -61,19 +87,19 @@ void Character::MoveLeft()
 
 		if (this->acceleration.x > -MAX_ACCELERATION)
 		{
-			this->acceleration.x -= RUN_ACCELERATION * _METER * Game::GetInstance()->GetElapsedSeconds();
+			this->acceleration.x -= RUN_ACCELERATION * _METER * t_delta_time;
 		}
 	}
 }
 
-void Character::StopMoving()
+void Character::StopMoving(float t_delta_time)
 {
 	this->isMoving = false;
 	this->isMovingLeft = false;
 	this->isMovingRight = false;
 }
 
-void Character::Jump()
+void Character::Jump(float t_delta_time)
 {
 	if (grounded)
 	{
@@ -83,7 +109,14 @@ void Character::Jump()
 	}
 }
 
-void Character::LimitJump()
+void Character::ForceJump()
+{
+	this->grounded = false;
+	this->hasJumped = true;
+	this->velocity.y = JUMP_FORCE_HIT;
+}
+
+void Character::LimitJump(float t_delta_time)
 {
 	if (!grounded && velocity.y > JUMP_LIMIT)
 	{
@@ -137,8 +170,43 @@ void Character::Update(const float t_delta_time)
 	hasJumped = false;
 }
 
+void Character::Move(const glm::vec2 t_offset)
+{
+	// Offset the object by the specified std::vec2
+	this->SetPosition(this->GetPosition() + t_offset);
+
+	for (Collider* collider : colliders)
+	{
+		collider->SetPosition(position);
+	}
+}
+
+void Character::WasHitByPlayer()
+{
+	std::cout << "Character was hit by the player, dealing 100 DMG" << std::endl;
+	Damage(99);
+}
+
 void Character::Damage(const int t_amount_of_damage)
 {
 	// Decrement the health of the character by the amount of damage passed to the function
 	this->health -= t_amount_of_damage;
+
+	if (health <= 0)
+	{
+		Die();
+	}
+}
+
+void Character::Die()
+{
+	for (std::vector<GameObject*>::iterator it = Game::GetInstance()->GetGameObjects()->begin(); it != Game::GetInstance()->GetGameObjects()->end(); ++it)
+	{
+		if ((*it) == this)
+		{
+			it = Game::GetInstance()->GetGameObjects()->erase(it);
+			GarbageDestroyer<Character*>::GetInstance()->Destroy(this);
+			break;
+		}
+	}
 }

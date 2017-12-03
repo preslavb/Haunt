@@ -5,12 +5,16 @@
 #include <SDL/SDL_image.h>
 #include "Errors.h"
 #include <glm/glm.hpp>
+#include "Vertex.h"
+#include "Coroutine.h"
 
 class Texture
 {
 private:
 	SDL_Surface* sdlTextureId;
 	GLuint glTextureId;
+
+	Color tint;
 
 	int width;
 	int height;

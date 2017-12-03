@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Coroutine.h" />
     <ClInclude Include="CoroutineManager.h" />
     <ClInclude Include="Dynamic.h" />
@@ -163,19 +165,24 @@
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="GameIncludes.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GarbageDestroyer.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="KeyState.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="UIElement.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera2D.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Dynamic.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -186,6 +193,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

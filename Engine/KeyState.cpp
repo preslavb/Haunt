@@ -10,7 +10,7 @@ KeyState::~KeyState()
 {
 }
 
-void KeyState::SetCurrentState(Uint32 t_sdl_state)
+void KeyState::SetCurrentState(Uint32 t_sdl_state, float t_delta_time)
 {
 	switch(t_sdl_state)
 	{
@@ -18,8 +18,8 @@ void KeyState::SetCurrentState(Uint32 t_sdl_state)
 		if (CurrentState != Held)
 		{
 			CurrentState = Pressed;
-			__raise this->OnKeyPressed();
-			CoroutineManager<bool>::StartCoroutine(KeyHeldCoroutine(this));
+			__raise this->OnKeyPressed(t_delta_time);
+			CoroutineManager<bool>::StartCoroutine(KeyHeldCoroutine(this, t_delta_time));
 		}
 		else
 		{
@@ -28,7 +28,7 @@ void KeyState::SetCurrentState(Uint32 t_sdl_state)
 		break;
 	case SDL_KEYUP:
 		CurrentState = Released;
-		__raise this->OnKeyReleased();
+		__raise this->OnKeyReleased(t_delta_time);
 		CurrentState = None;
 		break;
 	default:
@@ -37,7 +37,7 @@ void KeyState::SetCurrentState(Uint32 t_sdl_state)
 	}
 }
 
-Coroutine<bool> KeyState::KeyHeldCoroutine(KeyState* t_key_state)
+Coroutine<bool> KeyState::KeyHeldCoroutine(KeyState* t_key_state, float t_delta_time)
 {
 	co_yield true;
 	
@@ -45,7 +45,7 @@ Coroutine<bool> KeyState::KeyHeldCoroutine(KeyState* t_key_state)
 
 	while (t_key_state->CurrentState == KeyState::Held)
 	{
-		__raise t_key_state->WhenKeyHeld();
+		__raise t_key_state->WhenKeyHeld(t_delta_time);
 		co_yield true;
 	}
 	

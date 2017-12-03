@@ -30,7 +30,7 @@ public:
 	void SetAcceleration(glm::vec2 t_new_acceleration);
 
 	// Move the object by offsetting them with a Vector2D value
-	void Move(const glm::vec2 t_offset);
+	virtual void Move(const glm::vec2 t_offset);
 
 	// Update logic for any dynamic objects
 	void Update(float t_delta_time) override;

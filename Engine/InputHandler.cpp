@@ -42,7 +42,7 @@ KeyState* InputHandler::GetKeyStateClass(const Uint8 t_sdl_key)
 }
 
 // Update the logic of the Input Handler (most of the logic should be contained within events triggered by SetCurrentState)
-bool InputHandler::Update(bool t_loop)
+bool InputHandler::Update(bool t_loop, float t_delta_time)
 {
 	SDL_Event event;
 		
@@ -57,7 +57,7 @@ bool InputHandler::Update(bool t_loop)
 
 		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
 		{
-			t_loop = false;
+			
 		}
 
 		// Add the pressed or released key to the controlStates storage
@@ -66,7 +66,7 @@ bool InputHandler::Update(bool t_loop)
 			event.type == SDL_KEYDOWN ||
 			event.type == SDL_KEYUP)
 		{
-			GetInstance()->controlStates.find(event.key.keysym.sym) != GetInstance()->controlStates.end() ? GetInstance()->controlStates.find(event.key.keysym.sym)->second.SetCurrentState(event.type) : nullptr;
+			GetInstance()->controlStates.find(event.key.keysym.sym) != GetInstance()->controlStates.end() ? GetInstance()->controlStates.find(event.key.keysym.sym)->second.SetCurrentState(event.type, t_delta_time) : nullptr;
 		}
 	}
 

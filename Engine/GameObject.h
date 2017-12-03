@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "Texture.h"
+#include "Camera2D.h"
 
 class SpriteBatch;
 
@@ -10,6 +11,8 @@ class SpriteBatch;
 class GameObject
 {
 protected:
+	static Uint16 gameObjectsInitialized;
+
 	// The position of the object represented by a Vector2D
 	glm::vec2 position;
 	// The scale of the object represented by a Vector2D
@@ -19,6 +22,8 @@ protected:
 	// The texture that represents this object in the scene
 	Texture* texture;
 public:
+	Uint16 id;
+
 	// Constructors
 	GameObject(Texture* t_texture_to_use);
 	GameObject(Texture* t_texture_to_use, glm::vec2 t_new_position);
@@ -43,9 +48,16 @@ public:
 
 	// Update logic for any object in the game that is based on time passage
 	virtual void Update(float t_delta_time);
+	bool IsOnScreen(Camera2D* t_main_camera) const;
 
 	// Render the object sprite on screen
 	void Render(SpriteBatch* t_sprite_batch) const;
 };
+
+inline std::ostream & operator<<(std::ostream & t_string, GameObject const & t_object)
+{
+	t_string << t_object.id;
+	return t_string;
+}
 
 #endif

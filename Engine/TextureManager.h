@@ -25,15 +25,10 @@ public:
 	~TextureManager();
 
 	// Names of the textures, used to reference a specific texture in the texturesMap
-	std::vector<LPCSTR> TextureNames = {
-		"grass", "grassstone", "grassbare", "grassdark", "treedark", "treelight", "treescary", "treeautumn", "theBackground"
-	};
+	std::vector<LPCSTR> TextureNames;
 
 	// The path to the actual textures
-	std::vector<LPCSTR> TexturesToUse = {
-		"Images\\tile1.png", "Images\\tile2.png", "Images\\tile3.png", "Images\\tile4.png", "Images\\tree1.png",
-		"Images\\tree2.png", "Images\\tree3.png", "Images\\tree4.png", "Images\\theBackground.png"
-	};
+	std::vector<LPCSTR> TexturesToUse;
 
 	// Initialise the Texture manager
 	void Initialise();

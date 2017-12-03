@@ -33,9 +33,19 @@ public:
 		return scale;
 	}
 
+	glm::vec2 Camera2D::GetScreenDimensions() const
+	{
+		return glm::vec2(screenWidth, screenHeight);
+	}
+
 	glm::mat4 GetCameraMatrix() const
 	{
 		return cameraMatrix;
+	}
+
+	glm::mat4 GetOrthoMatrix() const
+	{
+		return orthographicMatrix;
 	}
 
 	void MoveUp()
@@ -66,6 +76,7 @@ public:
 
 	void Initialize(int t_new_width, int t_new_height);
 	void Update();
+	static Camera2D* GetMainCamera();
 private:
 	float scale;
 	bool updateMatrix;
@@ -75,4 +86,6 @@ private:
 
 	int screenWidth;
 	int screenHeight;
+
+	static Camera2D* mainCamera;
 };

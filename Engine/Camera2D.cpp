@@ -3,9 +3,15 @@
 #include <SDL/SDL.h>
 #include "InputHandler.h"
 
-Camera2D::Camera2D() : scale(1), cameraMatrix(1.0f), updateMatrix(true), orthographicMatrix(1.0f), screenWidth(500),
+Camera2D* Camera2D::mainCamera = nullptr;
+
+Camera2D::Camera2D() : scale(1), updateMatrix(true), cameraMatrix(1.0f), orthographicMatrix(1.0f), screenWidth(500),
 					   screenHeight(500)
 {
+	if (!mainCamera)
+	{
+		mainCamera = this;
+	}
 }
 
 Camera2D::~Camera2D()
@@ -30,13 +36,17 @@ void Camera2D::Update()
 {
 	if (updateMatrix)
 	{
-		glm::vec3 newTranslation(-position.x, -position.y, 0.0f);
+		const glm::vec3 newTranslation(-position.x, -position.y, 0.0f);
 		cameraMatrix = glm::translate(orthographicMatrix, newTranslation);
 
-		glm::vec3 newScale(scale, scale, 0.0f);
+		const glm::vec3 newScale(scale, scale, 0.0f);
 		cameraMatrix = glm::scale(cameraMatrix, newScale);
 
 		updateMatrix = false;
 	}
 }
 
+Camera2D* Camera2D::GetMainCamera()
+{
+	return mainCamera;
+}

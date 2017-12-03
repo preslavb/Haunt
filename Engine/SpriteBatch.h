@@ -5,6 +5,8 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include "GameObject.h"
+#include "Collider.h"
+#include "UIElement.h"
 
 enum class QuadSortType
 {
@@ -50,6 +52,8 @@ public:
 
 	void Draw(const glm::vec4& t_dest_rect, const glm::vec4& t_uv_rect, GLuint t_texture, float t_depth, Color t_color);
 	void Draw(GameObject* t_game_object, Color t_tint_to_use);
+	void Draw(UIElement* t_game_object, Color t_tint_to_use);
+	void Draw(Collider* t_collider, Texture* t_texture, Color t_tint_to_use);
 
 	void RenderBatches();
 
