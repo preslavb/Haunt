@@ -2,6 +2,10 @@
 #include "Engine/CollisionManager.h"
 #include "Enemy.h"
 #include "Engine/GarbageDestroyer.h"
+#include "GL/glut.h"
+#include "Floor.h"
+
+#define NDEBUG
 
 // Singleton Class Structure
 Game* Game::instance = nullptr;
@@ -51,14 +55,18 @@ void Game::Initialise(SDL_Window* t_window)
 
 	spriteBatch.Initialize();
 
-	glm::vec2 newVector;
-
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(0, 0)));
-	gameObjects[0]->GetTexture()->SetDepth(200);
+	gameObjects.back()->GetTexture()->SetDepth(200);
 	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("grassstone"), glm::vec2(500, 200)));
-	gameObjects[1]->GetTexture()->SetDepth(0);
-	gameObjects.push_back(new Enemy(textureManager->GetTexture("grass"), glm::vec2(2000, 200)));
-	gameObjects[2]->GetTexture()->SetDepth(1);
+	gameObjects.back()->GetTexture()->SetDepth(0);
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("grass"), glm::vec2(4000, 200)));
+	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(-100, 100), glm::vec2(5000, 100)));
+	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(700, 200), glm::vec2(5000, 100)));
+	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 100), glm::vec2(5000, 100)));
+	gameObjects.back()->GetTexture()->SetDepth(1);
 
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("UpArrow"), glm::vec2(150.0f, 150.0f), glm::vec2(100, 100)));
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("DownArrow"), glm::vec2(150.0f, 50.0f), glm::vec2(100, 100)));
@@ -81,6 +89,10 @@ void Game::Initialise(SDL_Window* t_window)
 	uiShaderProgram.CompileShaders("Shaders/UIShader.vert", "Shaders/UIShader.frag");
 
 	uiShaderProgram.LinkShaders();
+
+	textShaderProgram.CompileShaders("Shaders/textShader.vert", "Shaders/textShader.frag");
+
+	textShaderProgram.LinkShaders();
 
 	MainCamera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
 
@@ -147,7 +159,7 @@ void Game::Render(SDL_Window* t_window) const
 		tint.R = 200;
 		tint.G = 200;
 		tint.B = 200;
-		tint.A = 200;
+		tint.A = 255;
 	}
 	
 
@@ -158,7 +170,7 @@ void Game::Render(SDL_Window* t_window) const
 
 	for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
 	{
-		instance->spriteBatch.Draw(collisionManager, *TextureManager::GetInstance()->GetTexture("debug"), tint);
+		instance->spriteBatch.Draw(collisionManager, TextureManager::GetInstance()->GetTexture("debug"), tint);
 	}
 
 	instance->spriteBatch.End();
@@ -181,6 +193,12 @@ void Game::Render(SDL_Window* t_window) const
 	instance->spriteBatch.End();
 
 	instance->spriteBatch.RenderBatches();
+
+	instance->textShaderProgram.Use();
+	GLint tintLocation = instance->textShaderProgram.GetUniformLocation("tint");
+	GLfloat color[4] = { 1, 1, 1, 1 };
+	glUniform4fv(tintLocation, 4, color);
+	TextureManager::GetInstance()->WriteText("Test", glm::vec2(300, 550));
 
 	SDL_GL_SwapWindow(t_window);
 }

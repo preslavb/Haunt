@@ -6,9 +6,9 @@
 
 // Constants for use in physics calculations
 // Acceleration limit
-const float MAX_ACCELERATION = 30;
+const float MAX_ACCELERATION = 40;
 // How much to accelerate each second
-const float RUN_ACCELERATION = 30;
+const float RUN_ACCELERATION = 10;
 // Force of the initial jump
 const float JUMP_FORCE = 60;
 // Force of the jump after hitting an enemy
@@ -22,7 +22,7 @@ class Character : public Dynamic
 protected:
 	// Base speed when moving deliberately
 	double baseSpeed = 10;
-
+	int floorsCollidingWith = 0;
 	// Character hit points
 	int health;
 
@@ -37,10 +37,13 @@ protected:
 	Collider mainCollider;
 
 	std::vector<Collider*> colliders;
+	bool isHit = false;
 
 	void HookCharacterCollisionEvents();
-	void TestCollisionsCharacter();
-	void WasHitByPlayer();
+	void WasHitByPlayer(Collider* t_player_collider);
+	virtual void HandleFloorCollision(Collider* t_other_collider);
+	virtual void EscapeFloorCollision(Collider* t_other_collider);
+	bool IsHit();
 public:
 	// Constructors taking in a texture, position (optional) ,rotation(optional) and health(optional)
 	Character(Texture* t_texture_to_use);
@@ -57,15 +60,21 @@ public:
 	void MoveLeft(float t_delta_time);
 	void StopMoving(float t_delta_time);
 	void Jump(float t_delta_time);
-	void ForceJump();
+	void ForceJump(Collider* t_enemy_collider);
 	void LimitJump(float t_delta_time);
 
 	// Update logic for a character object
 	void Update(float t_delta_time) override;
 
+	void Ground(float t_ground_height);
+	void Unground();
+	void Character::SetPosition(glm::vec2 t_new_position) override;
+
 	// Call this method to damage the character
 	void Damage(int t_amount_of_damage);
 	void Die();
+
+	Collider* GetMainCollider();
 
 	void Move(const glm::vec2 t_offset) override;
 };

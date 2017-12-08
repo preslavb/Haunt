@@ -11,6 +11,10 @@ Player::Player(Texture* t_texture_to_use) : Character(t_texture_to_use), attackC
 		delete Player::instance;
 	}
 
+	type = "Player";
+
+	mainCollider = Collider(glm::vec2(position.x, position.y+1), Rect(glm::vec2(0, 0.5), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this);
+
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
 	HookInputEvent();
@@ -23,6 +27,10 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Char
 	{
 		delete Player::instance;
 	}
+
+	type = "Player";
+
+	mainCollider = Collider(glm::vec2(position.x, position.y + t_texture_to_use->GetTextureHeight()/2), Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight()/2)), this);
 
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
@@ -38,6 +46,10 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 		delete Player::instance;
 	}
 
+	type = "Player";
+
+	mainCollider = Collider(glm::vec2(position.x, position.y + 1), Rect(glm::vec2(0, 0.5), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this);
+
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
 	HookInputEvent();
@@ -52,6 +64,10 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 		delete Player::instance;
 	}
 
+	type = "Player";
+
+	mainCollider = Collider(glm::vec2(position.x, position.y + 1), Rect(glm::vec2(0, 0.5), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this);
+
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
 	HookInputEvent();
@@ -61,6 +77,11 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 Collider* Player::GetAttackCollider()
 {
 	return &attackCollider;
+}
+
+Collider* Player::GetHitCollider()
+{
+	return &mainCollider;
 }
 
 void Player::HookInputEvent()
@@ -75,8 +96,69 @@ void Player::HookInputEvent()
 
 void Player::HookCollisionEvents()
 {
-	//__hook(&Collider::OnCollision, &mainCollider, &Player::Damage);
-	__hook(&Collider::OnCollision, &attackCollider, &Player::ForceJump);
+	__hook(&Collider::OnCollision, &mainCollider, &Player::WasHitByEnemy);
+	__hook(&Collider::OnCollision, &attackCollider, &Player::HasHitEnemy);
+	__hook(&Collider::OnCollision, &attackCollider, &Player::HandleFloorCollision);
+	//__hook(&Collider::DuringCollision, &attackCollider, &Player::HandleFloorCollision);
+	__hook(&Collider::OnEscape, &mainCollider, &Player::EscapeFloorCollision);
+	__hook(&Collider::OnEscape, &attackCollider, &Player::EscapeFloorCollision);
+	__hook(&Collider::OnCollision, &attackCollider, &Player::WasHitByEnemy);
+}
+
+void Player::WasHitByEnemy(Collider* t_enemy_collider)
+{
+	if (!isHit && t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy")
+	{
+		SetVelocity(glm::vec2((GetPosition().x - t_enemy_collider->GetObjectBelongingTo()->GetPosition().x)*1.2, 50));
+		Damage(20);
+		isHit = true;
+	}
+}
+
+void Player::HasHitEnemy(Collider* t_enemy_collider)
+{
+	if (t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy")
+	{
+		ForceJump(t_enemy_collider);
+	}
+}
+
+void Player::HandleFloorCollision(Collider* t_other_collider)
+{
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	{
+		floorsCollidingWith++;
+
+		if (position.y >= t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y) - 20)
+		{
+			velocity.y <= 0 ? Ground(t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y)) : velocity.x = 0;
+		}
+
+		else
+		{
+			if (position.x <= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2))
+			{
+				velocity.x > 0 ? position = glm::vec2(t_other_collider->GetPosition().x - dimensions.x -0.1f, position.y) : position -= glm::vec2(0.1f, 0);
+				velocity = glm::vec2(0, velocity.y);
+				acceleration = glm::vec2(0, acceleration.y);
+			}
+			else if (position.x >= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2))
+			{
+				velocity.x < 0 ? position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x + 0.1f, position.y) : position += glm::vec2(0.1f, 0);
+				velocity = glm::vec2(0, velocity.y);
+				acceleration = glm::vec2(0, acceleration.y);
+			}
+		}
+	}
+}
+
+void Player::EscapeFloorCollision(Collider* t_other_collider)
+{
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	{
+		floorsCollidingWith--;
+		if (floorsCollidingWith <= 0) Unground();
+	}
 }
 
 void Player::Update(const float t_delta_time)
@@ -131,4 +213,3 @@ Player* Player::GetInstance(Texture* t_texture_to_use, glm::vec2 t_new_position)
 	}
 	return instance;
 }
-

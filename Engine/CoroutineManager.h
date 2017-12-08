@@ -28,6 +28,7 @@ public:
 
 	// Add a coroutine to the manager
 	static Coroutine<T>* StartCoroutine(Coroutine<T> t_new_coroutine);
+	void StopCoroutine(Coroutine<T>* t_coroutine);
 };
 
 //----------------- Implementation ------------------------//
@@ -84,6 +85,18 @@ Coroutine<T>* CoroutineManager<T>::StartCoroutine(Coroutine<T> t_new_coroutine)
 
 	// Return a pointer to the newly registered coroutine so that the value can be used by whoever called the coroutine
 	return &CoroutineManager<T>::GetInstance()->coroutinesStorage.back();
+}
+
+template<typename T>
+void CoroutineManager<T>::StopCoroutine(Coroutine<T>* t_coroutine)
+{
+	for (vector<Coroutine<T>>::iterator coroutine = coroutinesStorage.begin(); coroutine != coroutinesStorage.end(); ++coroutine)
+	{
+		if (&(*coroutine) == t_coroutine)
+		{
+			coroutinesStorage.erase(coroutine);
+		}
+	}
 }
 
 #endif

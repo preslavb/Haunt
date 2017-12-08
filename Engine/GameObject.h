@@ -21,6 +21,16 @@ protected:
 	double rotation;
 	// The texture that represents this object in the scene
 	Texture* texture;
+
+	// Acceleration applied to velocity and incremented each frame
+	glm::vec2 acceleration;
+
+	// Current velocity of the object
+	glm::vec2 velocity;
+
+	glm::vec2 dimensions;
+
+	string type = "GameObject";
 public:
 	Uint16 id;
 
@@ -34,14 +44,23 @@ public:
 	virtual ~GameObject();
 
 	// Accessors for the position, rotation and scale of the object
-	void SetPosition(glm::vec2 t_new_position);
+	virtual void SetPosition(glm::vec2 t_new_position);
 	void SetRotation(float t_new_rotation);
 	void SetScale(glm::vec2 t_new_scale);
 	glm::vec2 GetPosition() const;
 	double GetRotation() const;
 	glm::vec2 GetScale() const;
+	glm::vec2 GetDimensions() const;
 	Texture* GetTexture();
 	glm::vec4 GameObject::GetRect() const;
+
+	string GetType() { return type; }
+
+	// Accessors to velocity and acceleration
+	glm::vec2 GetVelocity() const;
+	glm::vec2 GetAcceleration() const;
+	void SetVelocity(glm::vec2 t_new_velocity);
+	void SetAcceleration(glm::vec2 t_new_acceleration);
 
 	// Update logic for any object in the game
 	virtual void Update();

@@ -6,6 +6,10 @@ TextureManager.cpp
 =================
 */
 #include "TextureManager.h"
+#include <GL/freeglut_std.h>
+#include <GL/glew.h>
+#include "GameConstants.h"
+
 TextureManager* TextureManager::instance = nullptr;
 
 /*
@@ -92,4 +96,18 @@ Texture* TextureManager::GetTexture(const int t_texture_index)
 		return textureIterator->second;
 	}
 	return nullptr;
+}
+
+void TextureManager::WriteText(string t_text, glm::vec2 t_position)
+{
+	glUseProgram(0);
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glRasterPos2i(t_position.x / _WINDOW_WIDTH, t_position.y / _WINDOW_HEIGHT);
+
+	//glDisable(GL_COLOR_ARRAY);
+	for (int i = 0; i < t_text.length(); i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, t_text[i]);
+	}
 }

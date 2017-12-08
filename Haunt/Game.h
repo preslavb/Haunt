@@ -6,8 +6,9 @@
 #include <Engine/TextureManager.h>
 #include <Engine/Camera2D.h>
 #include <Engine/SpriteBatch.h>
-#include "Engine/GLSLProgram.h"
-#include "Engine/UIElement.h"
+#include <Engine/GLSLProgram.h>
+#include <Engine/UIElement.h>
+#include <Engine/InputHandler.h>
 
 using namespace std;
 
@@ -60,6 +61,7 @@ private:
 
 	GLSLProgram worldShaderProgram;
 	GLSLProgram uiShaderProgram;
+	GLSLProgram textShaderProgram;
 
 	// The time recorded last frame
 	float lastTime;

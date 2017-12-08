@@ -36,34 +36,38 @@ void CollisionManager::RegisterCollision(Collision* t_collision)
 	{
 		if (opposite->FirstCollider == t_collision->SecondCollider && opposite->SecondCollider == t_collision->FirstCollider)
 		{
-			std::cout << "Prevented duplicate collision" << std::endl;
 			return;
 		}
 	}
+	//std::cout << "New Collision" << std::endl;
 	registeredCollisions.push_back(t_collision);
 }
 
 void CollisionManager::UnregisterCollider(Collider* t_collider)
 {
-	for (std::vector<Collider*>::iterator removeIt = registeredColliders.begin(); removeIt != registeredColliders.end(); ++removeIt)
+	for (std::list<Collider*>::iterator removeIt = registeredColliders.begin(); removeIt != registeredColliders.end(); ++removeIt)
 	{
-		registeredColliders.erase(removeIt);
-		break;
+		if (*removeIt == t_collider)
+		{
+			registeredColliders.erase(removeIt);
+			break;
+		}
 	}
 }
 
 void CollisionManager::Update()
 {
-	for (std::vector<Collider*>::iterator it = registeredColliders.begin(); it != registeredColliders.end(); ++it)
+	for (std::list<Collider*>::iterator it = registeredColliders.begin(); it != registeredColliders.end(); ++it)
 	{
-		for (std::vector<Collider*>::iterator it2 = registeredColliders.begin(); it2 != registeredColliders.end(); ++it2)
+		for (std::list<Collider*>::iterator it2 = registeredColliders.begin(); it2 != registeredColliders.end(); ++it2)
 		{
-			if (it != it2 && (*it)->GetObjectBelongingTo() != (*it2)->GetObjectBelongingTo() && glm::distance((*it)->GetPosition(), (*it2)->GetPosition()) < COLLISION_CHECKING_DISTANCE)
+			if (it != it2 && 
+				(*it)->GetObjectBelongingTo() != (*it2)->GetObjectBelongingTo() && 
+				(glm::distance((*it)->GetPosition() + (*it)->GetRect().GetDimensions() / 2.0f, (*it2)->GetPosition() + (*it2)->GetRect().GetDimensions() / 2.0f) < COLLISION_CHECKING_DISTANCE ||
+				glm::distance((*it)->GetPosition() + (*it)->GetRect().GetDimensions() / 2.0f, (*it2)->GetPosition() + (*it2)->GetRect().GetDimensions() / 2.0f) < (*it)->GetCollisionDistance()))
 			{
-				if (!(*it)->TestCollision((*it2)))
-				{
-					(*it2)->TestCollision((*it));
-				}
+				(*it)->TestCollision((*it2));
+				(*it2)->TestCollision((*it));
 			}
 
 			if (it2 == registeredColliders.end()) break;
@@ -80,7 +84,7 @@ void CollisionManager::Update()
 	}
 }
 
-std::vector<Collider*>* CollisionManager::GetVectorOfColliders()
+std::list<Collider*>* CollisionManager::GetVectorOfColliders()
 {
 	return &registeredColliders;
 }

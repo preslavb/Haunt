@@ -16,6 +16,10 @@ private:
 	// Hook up the receiver to the events in the input manager
 	void HookInputEvent();
 	void HookCollisionEvents();
+	void WasHitByEnemy(Collider* t_enemy_collider);
+	void HasHitEnemy(Collider* t_enemy_collider);
+	void HandleFloorCollision(Collider* t_other_collider) override;
+	void EscapeFloorCollision(Collider* t_other_collider) override;
 public:
 	// Constructors
 	Player(Texture* t_texture_to_use);
@@ -23,6 +27,7 @@ public:
 	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
 	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	Collider* GetAttackCollider();
+	Collider* GetHitCollider();
 	~Player();
 
 	static Player* GetInstance(Texture* t_texture_to_use);

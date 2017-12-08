@@ -27,6 +27,7 @@ public:
 	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health);
 	void MoveLeft(float t_delta_time);
+	void MoveRight(float t_delta_time);
 
 	void Update(float t_delta_time) override;
 };

@@ -36,6 +36,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Floor.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Floor.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>

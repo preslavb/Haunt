@@ -166,6 +166,8 @@ void SpriteBatch::RenderBatches()
 		glDrawArrays(GL_TRIANGLES, renderBatches[i].Offset, renderBatches[i].NumberOfVerts);
 	}
 
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	// Unbind the array of vertices
 	glBindVertexArray(0);
 }

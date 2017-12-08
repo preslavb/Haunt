@@ -5,17 +5,14 @@
 
 void Character::HookCharacterCollisionEvents()
 {
-	__hook(&Collider::OnCollision, &mainCollider, &Character::TestCollisionsCharacter);
-}
-
-void Character::TestCollisionsCharacter()
-{
-	//cout << "Collision on Character" << endl;
+	__hook(&Collider::OnCollision, &mainCollider, &Character::HandleFloorCollision);
+	__hook(&Collider::OnEscape, &mainCollider, &Character::EscapeFloorCollision);
 }
 
 // Constructors, using the Dynamic constructors
 Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use), mainCollider(glm::vec2(0, 0), Rect(glm::vec2(0, 0), glm::vec2(50, 50)), this)
 {
+	type = "Character";
 	this->health = 100;
 	colliders.push_back(&mainCollider);
 	HookCharacterCollisionEvents();
@@ -23,6 +20,7 @@ Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use), mai
 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Dynamic(t_texture_to_use, t_new_position), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
+	type = "Character";
 	this->health = 100;
 	colliders.push_back(&mainCollider);
 	HookCharacterCollisionEvents();
@@ -31,6 +29,7 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
+	type = "Character";
 	this->health = 100;
 	colliders.push_back(&mainCollider);
 	HookCharacterCollisionEvents();
@@ -39,6 +38,7 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_depth), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
+	type = "Character";
 	this->health = 100;
 	colliders.push_back(&mainCollider);
 	HookCharacterCollisionEvents();
@@ -47,6 +47,7 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
 	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
+	type = "Character";
 	this->health = t_new_health;
 	colliders.push_back(&mainCollider);
 	HookCharacterCollisionEvents();
@@ -65,7 +66,7 @@ void Character::MoveRight(float t_delta_time)
 	this->isMovingRight = true;
 	this->isMoving = true;
 
-	if (!(isMovingLeft))
+	if (!isMovingLeft && !isHit)
 	{
 		this->velocity.x = baseSpeed;
 
@@ -81,7 +82,7 @@ void Character::MoveLeft(float t_delta_time)
 	this->isMovingLeft = true;
 	this->isMoving = true;
 
-	if (!(isMovingRight))
+	if (!isMovingRight && !isHit)
 	{
 		this->velocity.x = -baseSpeed;
 
@@ -94,6 +95,7 @@ void Character::MoveLeft(float t_delta_time)
 
 void Character::StopMoving(float t_delta_time)
 {
+	this->velocity = acceleration;
 	this->isMoving = false;
 	this->isMovingLeft = false;
 	this->isMovingRight = false;
@@ -109,11 +111,17 @@ void Character::Jump(float t_delta_time)
 	}
 }
 
-void Character::ForceJump()
+void Character::ForceJump(Collider* t_enemy_collider)
 {
-	this->grounded = false;
-	this->hasJumped = true;
-	this->velocity.y = JUMP_FORCE_HIT;
+	if (t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy")
+	{
+		if (!isHit)
+		{
+			this->grounded = false;
+			this->hasJumped = true;
+			this->velocity.y = JUMP_FORCE_HIT;
+		}
+	}
 }
 
 void Character::LimitJump(float t_delta_time)
@@ -130,28 +138,26 @@ void Character::Update(const float t_delta_time)
 	if (!isMoving)
 	{
 		// If the character would start accelerating the opposite direction the next frame (non deliberately), stop them from doing so by setting their acceleration to 0
-		if (this->acceleration.x - _FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time < 0 && ::Compare(acceleration.x, 0) >= 0)
+		if (this->acceleration.x - _FRICTION * _METER * Compare(acceleration.x, 0) * t_delta_time < 0 && Compare(acceleration.x, 0) >= 0)
 		{
 			acceleration.x = 0;
 		}
-		else if (this->acceleration.x - (_FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time) > 0 && ::Compare(acceleration.x, 0) < 0)
+		else if (this->acceleration.x - (_FRICTION * _METER * Compare(acceleration.x, 0) * t_delta_time) > 0 && Compare(acceleration.x, 0) < 0)
 		{
 			acceleration.x = 0;
 		}
 		// Otherwise, apply friction to their acceleration value
 		else
 		{
-			this->acceleration.x -= _FRICTION * _METER * ::Compare(acceleration.x, 0) * t_delta_time;
+			this->acceleration.x -= _FRICTION * _METER * Compare(acceleration.x, 0) * t_delta_time;
 			this->velocity.x = acceleration.x;
 		}
 	}
 
-	// If the character has hit the ground, stop applying gravity to them
-	if (this->GetPosition().y < 200 && !hasJumped)
+	/*if (position.y < 200 && !hasJumped)
 	{
-		grounded = true;
-		this->SetPosition(glm::vec2(this->GetPosition().x, 200));
-	}
+		Ground(200);
+	}*/
 
 	// If the character is not grounded, apply the force of gravity, based on the time since the last frame. If they are, set their y velocity to 0
 	if (!grounded)
@@ -170,6 +176,21 @@ void Character::Update(const float t_delta_time)
 	hasJumped = false;
 }
 
+void Character::Ground(float t_ground_height)
+{
+	if (!hasJumped)
+	{
+		grounded = true;
+		isHit = false;
+		this->SetPosition(glm::vec2(this->GetPosition().x, t_ground_height));
+	}
+}
+
+void Character::Unground()
+{
+	grounded = false;
+}
+
 void Character::Move(const glm::vec2 t_offset)
 {
 	// Offset the object by the specified std::vec2
@@ -177,20 +198,79 @@ void Character::Move(const glm::vec2 t_offset)
 
 	for (Collider* collider : colliders)
 	{
-		collider->SetPosition(position);
+		collider->SetPosition(position + collider->GetOffset());
 	}
 }
 
-void Character::WasHitByPlayer()
+void Character::SetPosition(glm::vec2 t_new_position)
 {
-	std::cout << "Character was hit by the player, dealing 100 DMG" << std::endl;
-	Damage(99);
+	position = t_new_position;
+
+	for (Collider* collider : colliders)
+	{
+		collider->SetPosition(t_new_position + collider->GetOffset());
+	}
+}
+
+void Character::WasHitByPlayer(Collider* t_player_collider)
+{
+	if (Player::GetInstance()->GetHitCollider()->GetCollisionState(&mainCollider) == CollisionState::None && t_player_collider->GetObjectBelongingTo()->GetType() == "Player")
+	{
+		std::cout << "Character was hit by the player, dealing 100 DMG" << std::endl;
+		Player::GetInstance()->ForceJump(&mainCollider);
+		Damage(100);
+	}
+}
+
+void Character::HandleFloorCollision(Collider* t_other_collider)
+{
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	{
+		floorsCollidingWith++;
+		if (position.y >= t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y) - 20)
+		{
+			velocity.y <= 0 ? Ground(t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y)) : velocity.x = 0;
+		}
+
+		else
+		{
+			if (position.x <= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2))
+			{
+				isMovingLeft = true;
+				velocity = glm::vec2(-velocity.x, velocity.y);
+				acceleration = glm::vec2(-acceleration.x, acceleration.y);
+				position = glm::vec2(t_other_collider->GetPosition().x - dimensions.x, position.y);
+			}
+			else if (position.x >= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2))
+			{
+				isMovingLeft = false;
+				velocity = glm::vec2(-velocity.x, velocity.y);
+				acceleration = glm::vec2(-acceleration.x, acceleration.y);
+				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x, position.y);
+			}
+		}
+	}
+}
+
+void Character::EscapeFloorCollision(Collider* t_other_collider)
+{
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	{
+		floorsCollidingWith--;
+		if (floorsCollidingWith <= 0) Unground();
+	}
+}
+
+bool Character::IsHit()
+{
+	return isHit;
 }
 
 void Character::Damage(const int t_amount_of_damage)
 {
 	// Decrement the health of the character by the amount of damage passed to the function
 	this->health -= t_amount_of_damage;
+	this->isHit = true;
 
 	if (health <= 0)
 	{
@@ -209,4 +289,9 @@ void Character::Die()
 			break;
 		}
 	}
+}
+
+Collider* Character::GetMainCollider()
+{
+	return &mainCollider;
 }
