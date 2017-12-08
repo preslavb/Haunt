@@ -20,7 +20,8 @@ public:
 	static CollisionManager* GetInstance();
 
 	void RegisterCollider(Collider* t_collider);
-	void RegisterCollision(Collision* t_collision);
+	bool RegisterCollision(Collision* t_collision);
+	Collision* CheckCollision(Collider* t_first_collider, Collider* t_second_collider);
 	void UnregisterCollider(Collider* t_collider);
 
 	void Update();

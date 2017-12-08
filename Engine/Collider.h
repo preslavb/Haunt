@@ -30,12 +30,13 @@ public:
 	Collider(glm::vec2 t_position, Rect t_bounding_box, GameObject* t_belonging_to);
 	~Collider();
 
-	bool TestCollision(Collider* t_other_collider);
+	bool TestCollision(Collider* t_other_collider, bool t_already_checked = false);
 	void HandleCollisions(Collider* t_other_collider);
 
 	glm::vec2 GetPosition();
 	glm::vec2 GetOffset();
 	Rect GetRect();
+	void SetRect(Rect t_new_rect);
 	GameObject* GetObjectBelongingTo();
 	CollisionState GetCollisionState(Collider* t_other_collider);
 	void SetCollisionState(Collider* t_other_collider, CollisionState t_collision_state);
@@ -50,10 +51,12 @@ public:
 
 struct Collision
 {
-	Collision(Collider* t_first_collider, Collider* t_second_collider) : FirstCollider(t_first_collider), SecondCollider(t_second_collider)
+	Collision(Collider* t_first_collider, Collider* t_second_collider, CollisionState t_collision_state) : FirstCollider(t_first_collider), SecondCollider(t_second_collider), State(t_collision_state)
 	{
 	}
 
 	Collider* FirstCollider;
 	Collider* SecondCollider;
+
+	CollisionState State;
 };

@@ -61,11 +61,11 @@ void Game::Initialise(SDL_Window* t_window)
 	gameObjects.back()->GetTexture()->SetDepth(0);
 	gameObjects.push_back(new Enemy(textureManager->GetTexture("grass"), glm::vec2(4000, 200)));
 	gameObjects.back()->GetTexture()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(-100, 100), glm::vec2(5000, 100)));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 200)));
 	gameObjects.back()->GetTexture()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(700, 200), glm::vec2(5000, 100)));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(500, 400), glm::vec2(300, 100)));
 	gameObjects.back()->GetTexture()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 100), glm::vec2(5000, 100)));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 200)));
 	gameObjects.back()->GetTexture()->SetDepth(1);
 
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("UpArrow"), glm::vec2(150.0f, 150.0f), glm::vec2(100, 100)));

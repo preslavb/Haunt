@@ -30,17 +30,34 @@ void CollisionManager::RegisterCollider(Collider* t_collider)
 	std::cout << "Registered a new Collider, new size is: " << registeredColliders.size() << std::endl;
 }
 
-void CollisionManager::RegisterCollision(Collision* t_collision)
+bool CollisionManager::RegisterCollision(Collision* t_collision)
 {
 	for (Collision* opposite : registeredCollisions)
 	{
 		if (opposite->FirstCollider == t_collision->SecondCollider && opposite->SecondCollider == t_collision->FirstCollider)
 		{
-			return;
+			//std::cout << "Prevented a duplicate" << std::endl;
+			return false;
 		}
 	}
 	//std::cout << "New Collision" << std::endl;
 	registeredCollisions.push_back(t_collision);
+	return true;
+}
+
+Collision* CollisionManager::CheckCollision(Collider* t_first_collider, Collider* t_second_collider)
+{
+	for (Collision* opposite : registeredCollisions)
+	{
+		if ((opposite->FirstCollider == t_first_collider && opposite->SecondCollider == t_second_collider) ||
+			(opposite->SecondCollider == t_first_collider && opposite->FirstCollider == t_second_collider))
+		{
+			//std::cout << "Prevented a duplicate" << std::endl;
+			return opposite;
+		}
+	}
+
+	return nullptr;
 }
 
 void CollisionManager::UnregisterCollider(Collider* t_collider)
@@ -57,17 +74,16 @@ void CollisionManager::UnregisterCollider(Collider* t_collider)
 
 void CollisionManager::Update()
 {
-	for (std::list<Collider*>::iterator it = registeredColliders.begin(); it != registeredColliders.end(); ++it)
+	for (std::list<Collider*>::const_iterator it = registeredColliders.begin(), end = registeredColliders.end() ; it != end; ++it)
 	{
-		for (std::list<Collider*>::iterator it2 = registeredColliders.begin(); it2 != registeredColliders.end(); ++it2)
+		for (std::list<Collider*>::const_iterator it2 = registeredColliders.begin(), end2 = registeredColliders.end(); it2 != end2; ++it2)
 		{
 			if (it != it2 && 
 				(*it)->GetObjectBelongingTo() != (*it2)->GetObjectBelongingTo() && 
 				(glm::distance((*it)->GetPosition() + (*it)->GetRect().GetDimensions() / 2.0f, (*it2)->GetPosition() + (*it2)->GetRect().GetDimensions() / 2.0f) < COLLISION_CHECKING_DISTANCE ||
 				glm::distance((*it)->GetPosition() + (*it)->GetRect().GetDimensions() / 2.0f, (*it2)->GetPosition() + (*it2)->GetRect().GetDimensions() / 2.0f) < (*it)->GetCollisionDistance()))
 			{
-				(*it)->TestCollision((*it2));
-				(*it2)->TestCollision((*it));
+				(*it)->TestCollision((*it2), (*it2)->TestCollision((*it)));
 			}
 
 			if (it2 == registeredColliders.end()) break;

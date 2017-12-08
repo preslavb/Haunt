@@ -4,7 +4,6 @@
 #include "GameObject.h"
 #include <iostream>
 
-
 void Collider::HandleCollisions(Collider* t_other_collider)
 {
 	std::unordered_map<Collider*, CollisionState>::const_iterator thePair = collisionsMap.find(t_other_collider);
@@ -51,10 +50,11 @@ Collider::~Collider()
 }
 
 // Test for collision between two colliders
-bool Collider::TestCollision(Collider* t_other_collider)
+bool Collider::TestCollision(Collider* t_other_collider, bool t_already_checked)
 {
 	// A bounding box corner is withing the bounding box of the other collider OR a bounding box corner of the other collider is inside this bounding box 
-	if (((boundingBox.BottomLeft().x <= t_other_collider->boundingBox.TopRight().x && boundingBox.BottomLeft().x >= t_other_collider->boundingBox.TopLeft().x
+	if (t_already_checked ||
+		(((boundingBox.BottomLeft().x <= t_other_collider->boundingBox.TopRight().x && boundingBox.BottomLeft().x >= t_other_collider->boundingBox.TopLeft().x
 		&& boundingBox.BottomLeft().y >= t_other_collider->boundingBox.TopRight().y && boundingBox.BottomLeft().y <= t_other_collider->boundingBox.BottomRight().y)
 		||
 		(boundingBox.TopLeft().x <= t_other_collider->boundingBox.BottomRight().x && boundingBox.TopLeft().x >= t_other_collider->boundingBox.BottomLeft().x
@@ -77,36 +77,52 @@ bool Collider::TestCollision(Collider* t_other_collider)
 		&& t_other_collider->boundingBox.TopRight().y <= boundingBox.BottomLeft().y && t_other_collider->boundingBox.TopRight().y >= boundingBox.TopLeft().y)
 		||
 		(t_other_collider->boundingBox.BottomRight().x >= boundingBox.TopLeft().x && t_other_collider->boundingBox.BottomRight().x <= boundingBox.TopRight().x
-		&& t_other_collider->boundingBox.BottomRight().y >= boundingBox.TopLeft().y && t_other_collider->boundingBox.BottomRight().y <= boundingBox.BottomLeft().y)))
+		&& t_other_collider->boundingBox.BottomRight().y >= boundingBox.TopLeft().y && t_other_collider->boundingBox.BottomRight().y <= boundingBox.BottomLeft().y))))
 	{
-		CollisionManager::GetInstance()->RegisterCollision(new Collision(this, t_other_collider));
-		//cout << "Colliding" << endl;
+		Collision* collision = CollisionManager::GetInstance()->CheckCollision(this, t_other_collider);
+
+		if (collision != nullptr)
+		{
+			collisionsMap[t_other_collider] = collision->State;
+			return true;
+		}
 
 		switch (collisionsMap[t_other_collider])
 		{
 		case CollisionState::None:
 			collisionsMap[t_other_collider] = CollisionState::Entered;
-			//t_other_collider->SetCollisionState(this, CollisionState::Entered);
-			return true;
+			break;
 		case CollisionState::Entered:
 			collisionsMap[t_other_collider] = CollisionState::Colliding;
-			//t_other_collider->SetCollisionState(this, CollisionState::Colliding);
-			return true;
+			break;
 		case CollisionState::Colliding:
 			collisionsMap[t_other_collider] = CollisionState::Colliding;
-			//t_other_collider->SetCollisionState(this, CollisionState::Colliding);
-			return true;
+			break;
 		default:
 			break;
 		}
-	}
 
-	if (collisionsMap[t_other_collider] == CollisionState::Colliding || collisionsMap[t_other_collider] == CollisionState::Entered)
+		if (collisionsMap[t_other_collider] != CollisionState::None)
+		{
+			CollisionManager::GetInstance()->RegisterCollision(new Collision(this, t_other_collider, collisionsMap[t_other_collider]));
+			return true;
+		}
+	}
+	Collision* collision = CollisionManager::GetInstance()->CheckCollision(this, t_other_collider);
+
+	if ((collisionsMap[t_other_collider] == CollisionState::Colliding || collisionsMap[t_other_collider] == CollisionState::Entered) &&
+		collision == nullptr)
 	{
-		CollisionManager::GetInstance()->RegisterCollision(new Collision(this, t_other_collider));
+		CollisionManager::GetInstance()->RegisterCollision(new Collision(this, t_other_collider, CollisionState::Escaped));
 		collisionsMap[t_other_collider] = CollisionState::Escaped;
 		return true;
 	}
+	
+	if (collision != nullptr)
+	{
+		collisionsMap[t_other_collider] = collision->State;
+	}
+
 
 	collisionsMap[t_other_collider] = CollisionState::None;
 	return false;
@@ -125,6 +141,11 @@ glm::vec2 Collider::GetOffset()
 Rect Collider::GetRect()
 {
 	return boundingBox;
+}
+
+void Collider::SetRect(Rect t_new_rect)
+{
+	boundingBox = t_new_rect;
 }
 
 GameObject* Collider::GetObjectBelongingTo()

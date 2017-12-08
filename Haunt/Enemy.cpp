@@ -71,14 +71,11 @@ void Enemy::MoveRight(float t_delta_time)
 
 void Enemy::Update(float t_delta_time)
 {
-	if (mainCollider.GetCollisionState(Player::GetInstance()->GetAttackCollider()) == CollisionState::Colliding)
-	{
-		return;
-	}
+	cout << (int)GetMainCollider()->GetCollisionState(Player::GetInstance()->GetAttackCollider()) << endl;
 
 	if (IsOnScreen(Camera2D::GetMainCamera()))
 	{
-		isMovingLeft ? MoveLeft(t_delta_time) : MoveRight(t_delta_time);
+		//isMovingLeft ? MoveLeft(t_delta_time) : MoveRight(t_delta_time);
 
 		Character::Update(t_delta_time);
 	}
