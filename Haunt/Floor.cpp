@@ -10,7 +10,7 @@ Floor::Floor(Texture* t_texture_to_use, glm::vec2 t_new_position, glm::vec2 t_ne
 {
 	type = "Floor";
 	dimensions = (t_new_dimensions);
-	floorCollider.SetCollisionDistance(10000);
+	floorCollider.SetCollisionDistance(sqrt(pow(dimensions.x, 2) + pow(dimensions.y, 2)));
 	HookCollisionEvents();
 }
 

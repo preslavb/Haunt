@@ -37,7 +37,7 @@ public:
 	Texture* AddTexture(LPCSTR t_texture_name, LPCSTR t_file_name);
 	Texture* GetTexture(LPCSTR t_texture_name);
 	Texture* GetTexture(const int t_texture_index);
-	void WriteText(string t_text, glm::vec2 t_position);
+	void WriteText(string t_text, glm::vec2 t_position, Color t_color = Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// Delete all textures
 	void DeleteTextures();

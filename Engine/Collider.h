@@ -37,6 +37,7 @@ public:
 	glm::vec2 GetOffset();
 	Rect GetRect();
 	void SetRect(Rect t_new_rect);
+	glm::vec2 GetDimensions();
 	GameObject* GetObjectBelongingTo();
 	CollisionState GetCollisionState(Collider* t_other_collider);
 	void SetCollisionState(Collider* t_other_collider, CollisionState t_collision_state);

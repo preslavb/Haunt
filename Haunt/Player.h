@@ -19,6 +19,7 @@ private:
 	void WasHitByEnemy(Collider* t_enemy_collider);
 	void HasHitEnemy(Collider* t_enemy_collider);
 	void HandleFloorCollision(Collider* t_other_collider) override;
+	void HandleRoofCollision(Collider* t_other_collider);
 	void EscapeFloorCollision(Collider* t_other_collider) override;
 public:
 	// Constructors

@@ -30,13 +30,14 @@ struct SpriteQuad
 class RenderBatch
 {
 public:
-	RenderBatch(GLuint t_offset, GLuint t_number_of_verts, GLuint t_texture) : Offset(t_offset), NumberOfVerts(t_number_of_verts), Texture(t_texture)
+	RenderBatch(GLuint t_offset, GLuint t_number_of_verts, GLuint t_texture, GLfloat t_depth = 1) : Offset(t_offset), NumberOfVerts(t_number_of_verts), Texture(t_texture), Depth(t_depth)
 	{
 		
 	}
 	GLuint Offset;
 	GLuint NumberOfVerts;
 	GLuint Texture;
+	GLfloat Depth;
 };
 
 class SpriteBatch

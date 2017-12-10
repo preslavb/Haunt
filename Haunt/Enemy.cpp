@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "Game.h"
 
 void Enemy::HookEnemyEvents()
 {
@@ -10,30 +11,35 @@ void Enemy::HookEnemyEvents()
 Enemy::Enemy(Texture* t_texture_to_use) : Character(t_texture_to_use)
 {
 	type = "Enemy";
+	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
 Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position) : Character(t_texture_to_use, t_new_position)
 {
 	type = "Enemy";
+	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
 Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation) : Character(t_texture_to_use, t_new_position, t_new_rotation)
 {
 	type = "Enemy";
+	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
 Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth) : Character(t_texture_to_use, t_new_position, t_new_depth)
 {
 	type = "Enemy";
+	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
 Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health) : Character(t_texture_to_use, t_new_position, t_new_rotation, t_new_health)
 {
 	type = "Enemy";
+	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
@@ -69,13 +75,23 @@ void Enemy::MoveRight(float t_delta_time)
 	}
 }
 
+void Enemy::Die()
+{
+	Game::GetInstance()->AddScore();
+
+	Character::Die();
+}
+
 void Enemy::Update(float t_delta_time)
 {
-	cout << (int)GetMainCollider()->GetCollisionState(Player::GetInstance()->GetAttackCollider()) << endl;
-
 	if (IsOnScreen(Camera2D::GetMainCamera()))
 	{
-		//isMovingLeft ? MoveLeft(t_delta_time) : MoveRight(t_delta_time);
+		isEnabled = true;
+	}
+
+	if (isEnabled)
+	{
+		isMovingLeft ? MoveLeft(t_delta_time) : MoveRight(t_delta_time);
 
 		Character::Update(t_delta_time);
 	}

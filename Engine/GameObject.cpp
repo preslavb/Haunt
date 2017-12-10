@@ -43,7 +43,6 @@ GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position
 
 GameObject::~GameObject()
 {
-	gameObjectsInitialized--;
 }
 
 void GameObject::SetPosition(const glm::vec2 t_new_position)

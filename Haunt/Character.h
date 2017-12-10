@@ -10,7 +10,7 @@ const float MAX_ACCELERATION = 40;
 // How much to accelerate each second
 const float RUN_ACCELERATION = 10;
 // Force of the initial jump
-const float JUMP_FORCE = 60;
+const float JUMP_FORCE = 70;
 // Force of the jump after hitting an enemy
 const float JUMP_FORCE_HIT = 40;
 // Force to limit to if the button is released (causing the character to stop moving up)
@@ -72,7 +72,7 @@ public:
 
 	// Call this method to damage the character
 	void Damage(int t_amount_of_damage);
-	void Die();
+	virtual void Die();
 
 	Collider* GetMainCollider();
 

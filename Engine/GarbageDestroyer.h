@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <functional>
 
 template<typename T>
 class GarbageDestroyer
@@ -16,8 +17,13 @@ public:
 
 	static GarbageDestroyer<T>* GetInstance();
 
-	void Destroy(T t_object)
+	void Destroy(T t_object, function<void(T)> t_destroy_function = nullptr)
 	{
+		if (t_destroy_function != nullptr)
+		{
+			t_destroy_function(t_object);
+		}
+
 		garbage.push_back(t_object);
 	}
 

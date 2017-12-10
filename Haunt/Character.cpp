@@ -59,6 +59,16 @@ Character::~Character()
 	{
 		CollisionManager::GetInstance()->UnregisterCollider(collider);
 	}
+
+	for (vector<GameObject*>::iterator it = Game::GetInstance()->GetGameObjects()->begin(); it != Game::GetInstance()->GetGameObjects()->end(); ++it)
+	{
+		if ((*it) == this)
+		{
+			auto gameObjects = Game::GetInstance()->GetGameObjects();
+			gameObjects->erase(it);
+			break;
+		}
+	}
 }
 
 void Character::MoveRight(float t_delta_time)
@@ -95,7 +105,6 @@ void Character::MoveLeft(float t_delta_time)
 
 void Character::StopMoving(float t_delta_time)
 {
-	this->velocity = acceleration;
 	this->isMoving = false;
 	this->isMovingLeft = false;
 	this->isMovingRight = false;
@@ -150,19 +159,19 @@ void Character::Update(const float t_delta_time)
 		else
 		{
 			this->acceleration.x -= _FRICTION * _METER * Compare(acceleration.x, 0) * t_delta_time;
-			this->velocity.x = acceleration.x;
+			//this->velocity.x = acceleration.x;
 		}
 	}
-
-	/*if (position.y < 200 && !hasJumped)
-	{
-		Ground(200);
-	}*/
 
 	// If the character is not grounded, apply the force of gravity, based on the time since the last frame. If they are, set their y velocity to 0
 	if (!grounded)
 	{
 		this->velocity.y -= _GRAVITY * _METER * t_delta_time;
+
+		if (position.y + dimensions.y < 0)
+		{
+			Die();
+		}
 	}
 	else
 	{
@@ -280,15 +289,7 @@ void Character::Damage(const int t_amount_of_damage)
 
 void Character::Die()
 {
-	for (std::vector<GameObject*>::iterator it = Game::GetInstance()->GetGameObjects()->begin(); it != Game::GetInstance()->GetGameObjects()->end(); ++it)
-	{
-		if ((*it) == this)
-		{
-			it = Game::GetInstance()->GetGameObjects()->erase(it);
-			GarbageDestroyer<Character*>::GetInstance()->Destroy(this);
-			break;
-		}
-	}
+	GarbageDestroyer<Character*>::GetInstance()->Destroy(this);
 }
 
 Collider* Character::GetMainCollider()

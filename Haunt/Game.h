@@ -40,6 +40,8 @@ public:
 	void Render(SDL_Window* t_window) const;
 	static void Render();
 
+	void AddScore();
+
 	// Update loop for any model updates before render
 	static void Update();
 	// Update loop with a tracker of passed time since last frame (needed for physics)
@@ -69,6 +71,8 @@ private:
 
 	float framerate;
 	int frames;
+
+	int score = 0;
 
 	bool gameStarted = false;
 

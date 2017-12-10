@@ -17,7 +17,7 @@ using namespace std;
 - Is always called, thus ensures all OpenGL Texture ID objects are in a consistent state.
 =================
 */
-Texture::Texture()
+Texture::Texture(): depth(1)
 {
 	sdlTextureId = nullptr;
 }
@@ -29,7 +29,7 @@ Texture::Texture()
 * @param fileName The image file to load
 =================
 */
-Texture::Texture(const LPCSTR t_file_name)
+Texture::Texture(const LPCSTR t_file_name) : depth(1)
 {
 	LoadTexture(t_file_name);
 }
@@ -132,12 +132,18 @@ int Texture::GetTextureHeight() const
 	return sdlTextureId->clip_rect.h;
 }
 
-int Texture::GetDepth()
+float Texture::GetDepth()
 {
 	return depth;
 }
 
-void Texture::SetDepth(const int t_new_depth)
+float Texture::GetOrder()
+{
+	return order;
+}
+
+void Texture::SetDepth(const float t_new_depth, const float* t_new_order)
 {
 	depth = t_new_depth;
+	order = t_new_order != nullptr ? *t_new_order : t_new_depth;
 }

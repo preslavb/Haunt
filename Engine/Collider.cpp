@@ -13,7 +13,6 @@ void Collider::HandleCollisions(Collider* t_other_collider)
 		switch (collisionsMap.find(t_other_collider)->second)
 		{
 		case CollisionState::Entered:
-			std::cout << "Entered" << std::endl;
 			__raise OnCollision(t_other_collider);
 			break;
 		case CollisionState::Colliding:
@@ -21,7 +20,6 @@ void Collider::HandleCollisions(Collider* t_other_collider)
 			__raise DuringCollision(t_other_collider);
 			break;
 		case CollisionState::Escaped:
-			std::cout << "Escaped" << std::endl;
 			__raise OnEscape(t_other_collider);
 			break;
 		default:
@@ -121,6 +119,7 @@ bool Collider::TestCollision(Collider* t_other_collider, bool t_already_checked)
 	if (collision != nullptr)
 	{
 		collisionsMap[t_other_collider] = collision->State;
+		return true;
 	}
 
 
@@ -146,6 +145,11 @@ Rect Collider::GetRect()
 void Collider::SetRect(Rect t_new_rect)
 {
 	boundingBox = t_new_rect;
+}
+
+glm::vec2 Collider::GetDimensions()
+{
+	return glm::vec2(boundingBox.GetDimensions());
 }
 
 GameObject* Collider::GetObjectBelongingTo()

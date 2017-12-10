@@ -98,12 +98,12 @@ Texture* TextureManager::GetTexture(const int t_texture_index)
 	return nullptr;
 }
 
-void TextureManager::WriteText(string t_text, glm::vec2 t_position)
+void TextureManager::WriteText(string t_text, glm::vec2 t_position, Color t_color)
 {
 	glUseProgram(0);
 
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glRasterPos2i(t_position.x / _WINDOW_WIDTH, t_position.y / _WINDOW_HEIGHT);
+	glRasterPos2f(t_position.x / _WINDOW_WIDTH, t_position.y / _WINDOW_HEIGHT);
 
 	//glDisable(GL_COLOR_ARRAY);
 	for (int i = 0; i < t_text.length(); i++)

@@ -6,15 +6,17 @@ class Enemy : public Character
 private:
 	// Constants for use in physics calculations
 	// Acceleration limit
-	const float MAX_ACCELERATION = 10;
+	const float MAX_ACCELERATION = 5;
 	// How much to accelerate each second
-	const float RUN_ACCELERATION = 30;
+	const float RUN_ACCELERATION = 2;
 	// Force of the initial jump
 	const float JUMP_FORCE = 60;
 	// Force of the jump after hitting an enemy
 	const float JUMP_FORCE_HIT = 40;
 	// Force to limit to if the button is released (causing the character to stop moving up)
 	const float JUMP_LIMIT = 10;
+
+	bool isEnabled = false;
 
 	void HookEnemyEvents();
 protected:
@@ -28,6 +30,8 @@ public:
 	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health);
 	void MoveLeft(float t_delta_time);
 	void MoveRight(float t_delta_time);
+
+	void Die() override;
 
 	void Update(float t_delta_time) override;
 };
