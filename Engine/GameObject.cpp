@@ -4,38 +4,38 @@
 Uint16 GameObject::gameObjectsInitialized = 0;
 
 // Constructors (all require a texture for the sprite)
-GameObject::GameObject(Texture* t_texture_to_use) : position(0, 0), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use) : position(0, 0), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position) : position(t_new_position), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position) : position(t_new_position), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth): rotation(0), texture(t_texture_to_use), position(t_new_position), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth): rotation(0), texture(t_texture_to_use), position(t_new_position), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 	texture->SetDepth(t_new_depth);
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), texture(t_texture_to_use), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale) : position(t_new_position), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale) : position(t_new_position), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized)
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
 {
 	gameObjectsInitialized++;
 	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
@@ -61,6 +61,22 @@ void GameObject::SetScale(const glm::vec2 t_new_scale)
 {
 	// Set the scale to the passed new Vector2D value
 	this->scale = t_new_scale;
+}
+
+void GameObject::SetOrder(const float t_new_order)
+{
+	order = t_new_order;
+}
+
+void GameObject::SetDepth(const float t_new_depth, const float* t_new_order)
+{
+	depth = t_new_depth;
+	order = t_new_order != nullptr ? *t_new_order : t_new_depth;
+}
+
+void GameObject::SetDirection(Direction t_new_direction)
+{
+	currentDirection = t_new_direction;
 }
 
 glm::vec2 GameObject::GetPosition() const
@@ -97,6 +113,21 @@ glm::vec2 GameObject::GetDimensions() const
 Texture* GameObject::GetTexture()
 {
 	return this->texture;
+}
+
+float GameObject::GetOrder()
+{
+	return order;
+}
+
+float GameObject::GetDepth()
+{
+	return depth;
+}
+
+Direction GameObject::GetDirection()
+{
+	return currentDirection;
 }
 
 // Get the current value of the object velocity

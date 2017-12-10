@@ -7,6 +7,14 @@
 
 class SpriteBatch;
 
+enum Direction
+{
+	Left,
+	Right,
+	Up,
+	Down
+};
+
 // Any object present in the game
 class GameObject
 {
@@ -30,6 +38,12 @@ protected:
 
 	glm::vec2 dimensions;
 
+	Direction currentDirection = Direction::Right;
+
+	float order;
+
+	float depth;
+
 	string type = "GameObject";
 public:
 	Uint16 id;
@@ -47,11 +61,17 @@ public:
 	virtual void SetPosition(glm::vec2 t_new_position);
 	void SetRotation(float t_new_rotation);
 	void SetScale(glm::vec2 t_new_scale);
+	void SetOrder(const float t_new_order);
+	void SetDepth(const float t_new_depth, const float* t_new_order = nullptr);
+	void SetDirection(Direction t_new_direction);
 	glm::vec2 GetPosition() const;
 	double GetRotation() const;
 	glm::vec2 GetScale() const;
 	glm::vec2 GetDimensions() const;
 	Texture* GetTexture();
+	float GetOrder();
+	float GetDepth();
+	Direction GetDirection();
 	glm::vec4 GameObject::GetRect() const;
 
 	string GetType() { return type; }

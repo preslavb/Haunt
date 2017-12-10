@@ -73,31 +73,31 @@ void SpriteBatch::Draw(GameObject* t_game_object, Color t_tint_to_use = Color(25
 {
 	SpriteQuad* quad = new SpriteQuad();
 	quad->Texture = *t_game_object->GetTexture()->GetTextureID();
-	quad->Depth = t_game_object->GetTexture()->GetOrder();
+	quad->Depth = t_game_object->GetOrder();
 
 	glm::vec4 destinationRect = t_game_object->GetRect();
-	glm::vec4 uv(0, 0, 1, 1);
+	glm::vec4 uv = t_game_object->GetDirection() == Direction::Right ? glm::vec4(0, 0, 1, 1) : glm::vec4(0, 0, -1, 1);
 
 
 	quad->TopLeft.Color = t_tint_to_use;
 	quad->TopLeft.SetPosition(destinationRect.x, destinationRect.y + destinationRect.w);
 	quad->TopLeft.SetUV(uv.x, uv.y + uv.w);
-	quad->TopLeft.SetDepth(t_game_object->GetTexture()->GetDepth());
+	quad->TopLeft.SetDepth(t_game_object->GetDepth());
 
 	quad->BottomLeft.Color = t_tint_to_use;
 	quad->BottomLeft.SetPosition(destinationRect.x, destinationRect.y);
 	quad->BottomLeft.SetUV(uv.x, uv.y);
-	quad->BottomLeft.SetDepth(t_game_object->GetTexture()->GetDepth());
+	quad->BottomLeft.SetDepth(t_game_object->GetDepth());
 
 	quad->BottomRight.Color = t_tint_to_use;
 	quad->BottomRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y);
 	quad->BottomRight.SetUV(uv.x + uv.z, uv.y);
-	quad->BottomRight.SetDepth(t_game_object->GetTexture()->GetDepth());
+	quad->BottomRight.SetDepth(t_game_object->GetDepth());
 
 	quad->TopRight.Color = t_tint_to_use;
 	quad->TopRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y + destinationRect.w);
 	quad->TopRight.SetUV(uv.x + uv.z, uv.y + uv.w);
-	quad->TopRight.SetDepth(t_game_object->GetTexture()->GetDepth());
+	quad->TopRight.SetDepth(t_game_object->GetDepth());
 
 	quads.push_back(quad);
 }

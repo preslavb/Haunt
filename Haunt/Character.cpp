@@ -84,6 +84,8 @@ void Character::MoveRight(float t_delta_time)
 		{
 			this->acceleration.x += RUN_ACCELERATION * _METER * t_delta_time;
 		}
+
+		this->currentDirection = Direction::Right;
 	}
 }
 
@@ -100,6 +102,8 @@ void Character::MoveLeft(float t_delta_time)
 		{
 			this->acceleration.x -= RUN_ACCELERATION * _METER * t_delta_time;
 		}
+
+		this->currentDirection = Direction::Left;
 	}
 }
 

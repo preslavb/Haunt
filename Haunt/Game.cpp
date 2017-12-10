@@ -41,11 +41,11 @@ Game* Game::GetInstance()
 void Game::Initialise(SDL_Window* t_window)
 {
 	textureManager->TextureNames = {
-		"grass", "grassstone", "tree1", "grassdark", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "theBackground2", "debug"
+		"grass", "enemy", "tree1", "character", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "theBackground2", "debug"
 	};
 
 	textureManager->TexturesToUse = {
-		"Images\\tile1.png", "Images\\tile2.png", "Images\\tree1.png", "Images\\tile4.png", "Images\\UpArrow.png",
+		"Images\\tile1.png", "Images\\enemy.png", "Images\\tree1.png", "Images\\character.png", "Images\\UpArrow.png",
 		"Images\\DownArrow.png", "Images\\LeftArrow.png", "Images\\RightArrow.png", "Images\\theBackground.png", "Images\\theBackground2.png", "Images\\CollisionDebug.png"
 	};
 
@@ -54,25 +54,25 @@ void Game::Initialise(SDL_Window* t_window)
 	spriteBatch.Initialize();
 
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(-textureManager->GetTexture("theBackground")->GetTextureWidth()/2, -textureManager->GetTexture("theBackground")->GetTextureHeight() / 2)));
-	gameObjects.back()->GetTexture()->SetDepth(0);
+	gameObjects.back()->SetDepth(0);
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground2"), glm::vec2(-textureManager->GetTexture("theBackground2")->GetTextureWidth() / 2, -400)));
-	gameObjects.back()->GetTexture()->SetDepth(0.05);
-	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("grassstone"), glm::vec2(500, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1, new float(2));
-	gameObjects.push_back(new Enemy(textureManager->GetTexture("grassstone"), glm::vec2(4000, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
-	gameObjects.push_back(new Enemy(textureManager->GetTexture("grassstone"), glm::vec2(1500, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(0.05);
+	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("character"), glm::vec2(500, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(4000, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(1500, 100)));
+	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1000, 250), glm::vec2(300, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 100)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(-100, 0), glm::vec2(100, MainCamera.GetScreenDimensions().y)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("tree1"), glm::vec2(200, 10)));
-	gameObjects.back()->GetTexture()->SetDepth(1);
+	gameObjects.back()->SetDepth(1);
 
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("UpArrow"), glm::vec2(150.0f, 150.0f), glm::vec2(100, 100)));
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("DownArrow"), glm::vec2(150.0f, 50.0f), glm::vec2(100, 100)));
@@ -181,10 +181,10 @@ void Game::Render(SDL_Window* t_window) const
 		instance->spriteBatch.Draw(gameObject, tint);
 	}
 
-	/*for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
+	for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
 	{
 		instance->spriteBatch.Draw(collisionManager, TextureManager::GetInstance()->GetTexture("debug"), tint);
-	}*/
+	}
 
 	instance->spriteBatch.End();
 
