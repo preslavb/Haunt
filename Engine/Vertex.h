@@ -35,6 +35,10 @@ struct Vertex
 
 	UV UVCoordinates;
 
+	float Depth = 1;
+
+	float padding[7];
+
 	void SetPosition(float t_new_x, float t_new_y)
 	{
 		Position.X = t_new_x;
@@ -53,5 +57,10 @@ struct Vertex
 	{
 		UVCoordinates.U = t_new_u;
 		UVCoordinates.V = t_new_v;
+	}
+
+	void SetDepth(float t_new_depth)
+	{
+		Depth = t_new_depth;
 	}
 };

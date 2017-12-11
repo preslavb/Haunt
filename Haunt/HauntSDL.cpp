@@ -6,6 +6,7 @@
 
 #include <Engine/WindowManager.h>
 #include "Game.h"
+#include <GL/freeglut_std.h>
 
 using namespace std;
 
@@ -17,6 +18,8 @@ static Game* game = Game::GetInstance();
 
 int main(int argc, char* argv[])
 {
+	glutInit(&argc, argv);
+
 	if (!windowManager->InitializeWindow(_WINDOW_TITLE, _WINDOW_WIDTH, _WINDOW_HEIGHT))
 		return -1;
 

@@ -19,7 +19,8 @@ private:
 	int width;
 	int height;
 
-	int depth;
+	float depth;
+	float order;
 public:
 	Texture();
 	Texture(LPCSTR t_file_name);
@@ -29,7 +30,8 @@ public:
 	int GetTextureWidth() const;
 	int GetTextureHeight() const;
 
-	int GetDepth();
-	void SetDepth(const int t_new_depth);
+	float GetDepth();
+	float GetOrder();
+	void SetDepth(const float t_new_depth, const float* t_new_order = nullptr);
 };
 #endif

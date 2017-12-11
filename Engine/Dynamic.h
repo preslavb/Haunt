@@ -7,12 +7,6 @@
 class Dynamic : public GameObject
 {
 protected:
-	// Acceleration applied to velocity and incremented each frame
-	glm::vec2 acceleration;
-
-	// Current velocity of the object
-	glm::vec2 velocity;
-
 	// Whether the object is on the ground
 	bool grounded;
 public:
@@ -22,12 +16,6 @@ public:
 	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
 	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
 	~Dynamic();
-
-	// Accessors to velocity and acceleration
-	glm::vec2 GetVelocity() const;
-	glm::vec2 GetAcceleration() const;
-	void SetVelocity(glm::vec2 t_new_velocity);
-	void SetAcceleration(glm::vec2 t_new_acceleration);
 
 	// Move the object by offsetting them with a Vector2D value
 	virtual void Move(const glm::vec2 t_offset);

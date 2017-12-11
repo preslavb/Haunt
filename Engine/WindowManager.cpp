@@ -6,6 +6,8 @@ cSDL2WNDManager.cpp
 #include "WindowManager.h"
 #include <GL/glew.h>
 #include "Errors.h"
+#include <SDL/SDL_ttf.h>
+#include <gl/glut.h>
 
 WindowManager* WindowManager::instance = nullptr;
 
@@ -77,6 +79,7 @@ bool WindowManager::InitializeWindow(string t_window_title, const int t_width, c
 		cout << ("Context created successfully") << endl;
 	}
 
+	// Initialize glew
 	GLenum error = glewInit();
 	if (error != GLEW_OK)
 	{

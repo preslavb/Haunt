@@ -6,8 +6,9 @@
 #include <Engine/TextureManager.h>
 #include <Engine/Camera2D.h>
 #include <Engine/SpriteBatch.h>
-#include "Engine/GLSLProgram.h"
-#include "Engine/UIElement.h"
+#include <Engine/GLSLProgram.h>
+#include <Engine/UIElement.h>
+#include <Engine/InputHandler.h>
 
 using namespace std;
 
@@ -39,6 +40,8 @@ public:
 	void Render(SDL_Window* t_window) const;
 	static void Render();
 
+	void AddScore();
+
 	// Update loop for any model updates before render
 	static void Update();
 	// Update loop with a tracker of passed time since last frame (needed for physics)
@@ -60,6 +63,7 @@ private:
 
 	GLSLProgram worldShaderProgram;
 	GLSLProgram uiShaderProgram;
+	GLSLProgram textShaderProgram;
 
 	// The time recorded last frame
 	float lastTime;
@@ -67,6 +71,8 @@ private:
 
 	float framerate;
 	int frames;
+
+	int score = 0;
 
 	bool gameStarted = false;
 

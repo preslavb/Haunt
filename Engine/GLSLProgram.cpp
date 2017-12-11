@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <vector>
+#include <GL/glew.h>
 
 
 GLSLProgram::GLSLProgram(): programID(0), vertexShaderID(0), fragmentShaderID(0), numberOfAttributes(0)

@@ -2,6 +2,8 @@
 #include "Engine/CollisionManager.h"
 #include "Enemy.h"
 #include "Engine/GarbageDestroyer.h"
+#include "GL/glut.h"
+#include "Floor.h"
 
 // Singleton Class Structure
 Game* Game::instance = nullptr;
@@ -39,26 +41,38 @@ Game* Game::GetInstance()
 void Game::Initialise(SDL_Window* t_window)
 {
 	textureManager->TextureNames = {
-		"grass", "grassstone", "grassbare", "grassdark", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "debug"
+		"grass", "enemy", "tree1", "character", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "theBackground2", "debug"
 	};
 
 	textureManager->TexturesToUse = {
-		"Images\\tile1.png", "Images\\tile2.png", "Images\\tile3.png", "Images\\tile4.png", "Images\\UpArrow.png",
-		"Images\\DownArrow.png", "Images\\LeftArrow.png", "Images\\RightArrow.png", "Images\\theBackground.png", "Images\\CollisionDebug.png"
+		"Images\\tile1.png", "Images\\enemy.png", "Images\\tree1.png", "Images\\character.png", "Images\\UpArrow.png",
+		"Images\\DownArrow.png", "Images\\LeftArrow.png", "Images\\RightArrow.png", "Images\\theBackground.png", "Images\\theBackground2.png", "Images\\CollisionDebug.png"
 	};
 
 	textureManager->Initialise();
 
 	spriteBatch.Initialize();
 
-	glm::vec2 newVector;
-
-	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(0, 0)));
-	gameObjects[0]->GetTexture()->SetDepth(200);
-	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("grassstone"), glm::vec2(500, 200)));
-	gameObjects[1]->GetTexture()->SetDepth(0);
-	gameObjects.push_back(new Enemy(textureManager->GetTexture("grass"), glm::vec2(2000, 200)));
-	gameObjects[2]->GetTexture()->SetDepth(1);
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(-textureManager->GetTexture("theBackground")->GetTextureWidth()/2, -textureManager->GetTexture("theBackground")->GetTextureHeight() / 2)));
+	gameObjects.back()->SetDepth(0);
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground2"), glm::vec2(-textureManager->GetTexture("theBackground2")->GetTextureWidth() / 2, -400)));
+	gameObjects.back()->SetDepth(0.05);
+	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("character"), glm::vec2(500, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(4000, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(1500, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1000, 250), glm::vec2(300, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 100)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(-100, 0), glm::vec2(100, MainCamera.GetScreenDimensions().y)));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("tree1"), glm::vec2(200, 10)));
+	gameObjects.back()->SetDepth(1);
 
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("UpArrow"), glm::vec2(150.0f, 150.0f), glm::vec2(100, 100)));
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("DownArrow"), glm::vec2(150.0f, 50.0f), glm::vec2(100, 100)));
@@ -75,12 +89,23 @@ void Game::Initialise(SDL_Window* t_window)
 	worldShaderProgram.AddAttribute("vertexPosition");
 	worldShaderProgram.AddAttribute("vertexColor");
 	worldShaderProgram.AddAttribute("vertexUV");
+	worldShaderProgram.AddAttribute("depth");
 
 	worldShaderProgram.LinkShaders();
 
 	uiShaderProgram.CompileShaders("Shaders/UIShader.vert", "Shaders/UIShader.frag");
+	uiShaderProgram.AddAttribute("vertexPosition");
+	uiShaderProgram.AddAttribute("vertexColor");
+	uiShaderProgram.AddAttribute("vertexUV");
 
 	uiShaderProgram.LinkShaders();
+
+	textShaderProgram.CompileShaders("Shaders/textShader.vert", "Shaders/textShader.frag");
+	textShaderProgram.AddAttribute("vertexPosition");
+	textShaderProgram.AddAttribute("vertexColor");
+	textShaderProgram.AddAttribute("vertexUV");
+
+	textShaderProgram.LinkShaders();
 
 	MainCamera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
 
@@ -129,7 +154,7 @@ void Game::Render(SDL_Window* t_window) const
 	glm::mat4 cameraMatrix = MainCamera.GetCameraMatrix();
 	glUniformMatrix4fv(cameraLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	instance->spriteBatch.Begin(QuadSortType::BACK_TO_FRONT);
+	instance->spriteBatch.Begin(QuadSortType::FRONT_TO_BACK);
 
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -147,7 +172,7 @@ void Game::Render(SDL_Window* t_window) const
 		tint.R = 200;
 		tint.G = 200;
 		tint.B = 200;
-		tint.A = 200;
+		tint.A = 255;
 	}
 	
 
@@ -158,7 +183,7 @@ void Game::Render(SDL_Window* t_window) const
 
 	for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
 	{
-		instance->spriteBatch.Draw(collisionManager, *TextureManager::GetInstance()->GetTexture("debug"), tint);
+		instance->spriteBatch.Draw(collisionManager, TextureManager::GetInstance()->GetTexture("debug"), tint);
 	}
 
 	instance->spriteBatch.End();
@@ -182,11 +207,18 @@ void Game::Render(SDL_Window* t_window) const
 
 	instance->spriteBatch.RenderBatches();
 
+	TextureManager::GetInstance()->WriteText("Score: " + to_string(score), glm::vec2(-MainCamera.GetScreenDimensions().x + 10, MainCamera.GetScreenDimensions().y - 100));
+
 	SDL_GL_SwapWindow(t_window);
 }
 
 void Game::Render()
 {
+}
+
+void Game::AddScore()
+{
+	score += 100;
 }
 
 // Updates detatched from timing (frame based)
@@ -200,10 +232,10 @@ void Game::Update(float t_delta_time)
 {
 	InputHandler::GetInstance()->Update(true, t_delta_time);
 
-	for each (GameObject* gameObject in gameObjects)
+	for (vector<GameObject*>::iterator it = gameObjects.begin(); it != gameObjects.end(); ++it)
 	{
-		gameObject->Update();
-		gameObject->Update(t_delta_time);
+		(*it)->Update();
+		(*it)->Update(t_delta_time);
 	}
 
 	MainCamera.Update();

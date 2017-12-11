@@ -7,12 +7,12 @@ static float const COLLISION_CHECKING_DISTANCE = 200.0f;
 class CollisionManager
 {
 private:
-	std::vector<Collider*>::iterator it;
-	std::vector<Collider*>::iterator it2;
+	std::list<Collider*>::iterator it;
+	std::list<Collider*>::iterator it2;
 
 	static CollisionManager* instance;
-	std::vector<Collider*> registeredColliders;
-	std::vector<Collision*> registeredCollisions;
+	std::list<Collider*> registeredColliders;
+	std::list<Collision*> registeredCollisions;
 public:
 	CollisionManager();
 	~CollisionManager();
@@ -20,10 +20,11 @@ public:
 	static CollisionManager* GetInstance();
 
 	void RegisterCollider(Collider* t_collider);
-	void RegisterCollision(Collision* t_collision);
+	bool RegisterCollision(Collision* t_collision);
+	Collision* CheckCollision(Collider* t_first_collider, Collider* t_second_collider);
 	void UnregisterCollider(Collider* t_collider);
 
 	void Update();
-	std::vector<Collider*>* GetVectorOfColliders();
+	std::list<Collider*>* GetVectorOfColliders();
 };
 

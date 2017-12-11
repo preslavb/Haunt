@@ -41,7 +41,7 @@ Coroutine<bool> KeyState::KeyHeldCoroutine(KeyState* t_key_state, float t_delta_
 {
 	co_yield true;
 	
-	t_key_state->CurrentState = KeyState::Held;
+	if (t_key_state->CurrentState != None) t_key_state->CurrentState = KeyState::Held;
 
 	while (t_key_state->CurrentState == KeyState::Held)
 	{

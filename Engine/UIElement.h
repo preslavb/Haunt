@@ -27,6 +27,7 @@ protected:
 	glm::vec2 dimensions;
 	Color tint = Color(255, 255, 255, 255);
 
+	Coroutine<bool>* fadeOutCoroutine;
 	Coroutine<bool> FadeOutCoroutine(float t_seconds);
 public:
 	Uint16 id;

@@ -46,6 +46,7 @@ UIElement::UIElement(Texture* t_texture_to_use, glm::vec2 t_new_position, glm::v
 
 UIElement::~UIElement()
 {
+	CoroutineManager<bool>::GetInstance()->StopCoroutine(fadeOutCoroutine);
 }
 
 void UIElement::HookInputs()
@@ -106,7 +107,7 @@ void UIElement::FadeOut(float t_delta_time)
 	if (!isFading)
 	{
 		isFading = true;
-		CoroutineManager<bool>::GetInstance()->StartCoroutine(FadeOutCoroutine(t_delta_time));
+		fadeOutCoroutine = CoroutineManager<bool>::GetInstance()->StartCoroutine(FadeOutCoroutine(t_delta_time));
 	}
 }
 
