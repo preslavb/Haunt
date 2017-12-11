@@ -45,4 +45,9 @@ public:
 	{
 		position = t_new_position;
 	}
+
+	bool IsValid()
+	{
+		return dimensions.x && dimensions.y;
+	}
 };

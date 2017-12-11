@@ -8,35 +8,35 @@ void Enemy::HookEnemyEvents()
 	//__hook(&Collider::OnCollision, Player::GetInstance()->GetAttackCollider(), &Enemy::WasHitByPlayer);
 }
 
-Enemy::Enemy(Texture* t_texture_to_use) : Character(t_texture_to_use)
+Enemy::Enemy(Texture* t_texture_to_use, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_custom_collider_dimensions)
 {
 	type = "Enemy";
 	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
-Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position) : Character(t_texture_to_use, t_new_position)
+Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_new_position, t_custom_collider_dimensions)
 {
 	type = "Enemy";
 	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
-Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation) : Character(t_texture_to_use, t_new_position, t_new_rotation)
+Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_new_position, t_new_rotation, t_custom_collider_dimensions)
 {
 	type = "Enemy";
 	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
-Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth) : Character(t_texture_to_use, t_new_position, t_new_depth)
+Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_new_position, t_new_depth, t_custom_collider_dimensions)
 {
 	type = "Enemy";
 	isMovingLeft = true;
 	HookEnemyEvents();
 }
 
-Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health) : Character(t_texture_to_use, t_new_position, t_new_rotation, t_new_health)
+Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_new_position, t_new_rotation, t_new_health, t_custom_collider_dimensions)
 {
 	type = "Enemy";
 	isMovingLeft = true;

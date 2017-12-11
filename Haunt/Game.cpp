@@ -40,13 +40,15 @@ Game* Game::GetInstance()
 // Initialise all game variables and renderer before the game loop starts
 void Game::Initialise(SDL_Window* t_window)
 {
+	MainCamera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
+
 	textureManager->TextureNames = {
-		"grass", "enemy", "tree1", "character", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "theBackground2", "debug"
+		"grass", "enemy", "tree1", "character", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "theBackground", "theBackground2", "title", "debug"
 	};
 
 	textureManager->TexturesToUse = {
 		"Images\\tile1.png", "Images\\enemy.png", "Images\\tree1.png", "Images\\character.png", "Images\\UpArrow.png",
-		"Images\\DownArrow.png", "Images\\LeftArrow.png", "Images\\RightArrow.png", "Images\\theBackground.png", "Images\\theBackground2.png", "Images\\CollisionDebug.png"
+		"Images\\DownArrow.png", "Images\\LeftArrow.png", "Images\\RightArrow.png", "Images\\theBackground.png", "Images\\theBackground2.png", "Images\\title.png", "Images\\CollisionDebug.png"
 	};
 
 	textureManager->Initialise();
@@ -78,6 +80,7 @@ void Game::Initialise(SDL_Window* t_window)
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("DownArrow"), glm::vec2(150.0f, 50.0f), glm::vec2(100, 100)));
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("LeftArrow"), glm::vec2(50.0f, 50.0f), glm::vec2(100, 100)));
 	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("RightArrow"), glm::vec2(250.0f, 50.0f), glm::vec2(100, 100)));
+	uiElements.push_back(new UIElement(TextureManager::GetInstance()->GetTexture("title"), glm::vec2(0.0f, 0.0f), glm::vec2(MainCamera.GetScreenDimensions())));
 
 	for (UIElement* uiElement : uiElements)
 	{
@@ -106,8 +109,6 @@ void Game::Initialise(SDL_Window* t_window)
 	textShaderProgram.AddAttribute("vertexUV");
 
 	textShaderProgram.LinkShaders();
-
-	MainCamera.Initialize(_WINDOW_WIDTH, _WINDOW_HEIGHT);
 
 	lastTime = SDL_GetTicks();
 }

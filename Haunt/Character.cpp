@@ -10,7 +10,7 @@ void Character::HookCharacterCollisionEvents()
 }
 
 // Constructors, using the Dynamic constructors
-Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use), mainCollider(glm::vec2(0, 0), Rect(glm::vec2(0, 0), glm::vec2(50, 50)), this)
+Character::Character(Texture* t_texture_to_use, Rect t_custom_collider_dimensions) : Dynamic(t_texture_to_use), mainCollider(glm::vec2(0, 0), t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(50, 50)), this)
 {
 	type = "Character";
 	this->health = 100;
@@ -18,7 +18,7 @@ Character::Character(Texture* t_texture_to_use) : Dynamic(t_texture_to_use), mai
 	HookCharacterCollisionEvents();
 }
 
-Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Dynamic(t_texture_to_use, t_new_position), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, Rect t_custom_collider_dimensions) : Dynamic(t_texture_to_use, t_new_position), mainCollider(t_new_position, t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	type = "Character";
 	this->health = 100;
@@ -26,8 +26,8 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position) 
 	HookCharacterCollisionEvents();
 }
 
-Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, Rect t_custom_collider_dimensions) : Dynamic(
+	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	type = "Character";
 	this->health = 100;
@@ -35,8 +35,8 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 	HookCharacterCollisionEvents();
 }
 
-Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_depth), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth, Rect t_custom_collider_dimensions) : Dynamic(
+	t_texture_to_use, t_new_position, t_new_depth), mainCollider(t_new_position, t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	type = "Character";
 	this->health = 100;
@@ -44,8 +44,8 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 	HookCharacterCollisionEvents();
 }
 
-Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health) : Dynamic(
-	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
+Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, const int t_new_health, Rect t_custom_collider_dimensions) : Dynamic(
+	t_texture_to_use, t_new_position, t_new_rotation), mainCollider(t_new_position, t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight())), this)
 {
 	type = "Character";
 	this->health = t_new_health;
@@ -252,14 +252,14 @@ void Character::HandleFloorCollision(Collider* t_other_collider)
 				isMovingLeft = true;
 				velocity = glm::vec2(-velocity.x, velocity.y);
 				acceleration = glm::vec2(-acceleration.x, acceleration.y);
-				position = glm::vec2(t_other_collider->GetPosition().x - dimensions.x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x - mainCollider.GetDimensions().x, position.y);
 			}
 			else if (position.x >= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2))
 			{
 				isMovingLeft = false;
 				velocity = glm::vec2(-velocity.x, velocity.y);
 				acceleration = glm::vec2(-acceleration.x, acceleration.y);
-				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x, position.y);
 			}
 		}
 	}

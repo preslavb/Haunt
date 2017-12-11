@@ -46,11 +46,11 @@ protected:
 	bool IsHit();
 public:
 	// Constructors taking in a texture, position (optional) ,rotation(optional) and health(optional)
-	Character(Texture* t_texture_to_use);
-	Character(Texture* t_texture_to_use, glm::vec2 t_new_position);
-	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
-	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
-	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health);
+	Character(Texture* t_texture_to_use, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Character(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
 
 	// Destructor
 	~Character();

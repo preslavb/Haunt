@@ -25,7 +25,7 @@ using namespace std;
 
 //Define the string to appear in the top left corner of the window and the window dimensions
 #define _WINDOW_TITLE "Haunt"
-#define _WINDOW_WIDTH 1024
+#define _WINDOW_WIDTH 1280
 #define _WINDOW_HEIGHT 768
 
 inline extern float Compare(float t_first, float t_second)

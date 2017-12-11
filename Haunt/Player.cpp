@@ -5,7 +5,7 @@
 
 Player* Player::instance = nullptr;
 
-Player::Player(Texture* t_texture_to_use) : Character(t_texture_to_use), attackCollider(position + glm::vec2(-100, 0), Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight()/2)), this)
+Player::Player(Texture* t_texture_to_use, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_custom_collider_dimensions), attackCollider(position + glm::vec2(-100, 0), Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight()/2)), this)
 {
 	if (Player::instance != nullptr)
 	{
@@ -22,7 +22,7 @@ Player::Player(Texture* t_texture_to_use) : Character(t_texture_to_use), attackC
 	HookCollisionEvents();
 }
 
-Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Character(t_texture_to_use, t_new_position), attackCollider(position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
+Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_new_position, t_custom_collider_dimensions), attackCollider(position + glm::vec2(0 + t_custom_collider_dimensions.GetPosition().x, t_custom_collider_dimensions.GetPosition().y), t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
 {
 	if (Player::instance != nullptr)
 	{
@@ -35,7 +35,7 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Char
 		CollisionManager::GetInstance()->UnregisterCollider(&mainCollider);
 	}*/
 
-	mainCollider = Collider(position + glm::vec2(0, dimensions.y / 2), Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this);
+	mainCollider = Collider(position + glm::vec2(0 + t_custom_collider_dimensions.GetPosition().x, (dimensions.y / 2) + t_custom_collider_dimensions.GetPosition().y), t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this);
 
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
@@ -43,8 +43,8 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position) : Char
 	HookCollisionEvents();
 }
 
-Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : Character(
-	t_texture_to_use, t_new_position, t_new_rotation), attackCollider(position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
+Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation, Rect t_custom_collider_dimensions) : Character(
+	t_texture_to_use, t_new_position, t_new_rotation, t_custom_collider_dimensions), attackCollider(position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
 {
 	if (Player::instance != nullptr)
 	{
@@ -61,8 +61,8 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 	HookCollisionEvents();
 }
 
-Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : Character(
-	t_texture_to_use, t_new_position, t_new_depth), attackCollider(position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
+Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth, Rect t_custom_collider_dimensions) : Character(
+	t_texture_to_use, t_new_position, t_new_depth, t_custom_collider_dimensions), attackCollider(position, Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this)
 {
 	if (Player::instance != nullptr)
 	{
@@ -145,14 +145,14 @@ void Player::HandleFloorCollision(Collider* t_other_collider)
 		{
 			if (position.x + dimensions.x / 2 <= (t_other_collider->GetObjectBelongingTo()->GetPosition().x) && velocity.x > 0)
 			{
-				position = glm::vec2(t_other_collider->GetPosition().x - dimensions.x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x - mainCollider.GetDimensions().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
 				acceleration = glm::vec2(0, acceleration.y);
 			}
 			
 			if (position.x >= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2) && velocity.x < 0)
 			{
-				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
 				acceleration = glm::vec2(0, acceleration.y);
 			}
@@ -245,6 +245,15 @@ Player* Player::GetInstance(Texture* t_texture_to_use, glm::vec2 t_new_position)
 	if (!instance)
 	{
 		instance = new Player(t_texture_to_use, t_new_position);
+	}
+	return instance;
+}
+
+Player* Player::GetInstance(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions)
+{
+	if (!instance)
+	{
+		instance = new Player(t_texture_to_use, t_new_position, t_custom_collider_dimensions);
 	}
 	return instance;
 }
