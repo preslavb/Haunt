@@ -2,6 +2,7 @@
 #include "Engine/Camera2D.h"
 #include "Game.h"
 #include "Engine/CollisionManager.h"
+#include "Engine/GarbageDestroyer.h"
 
 Player* Player::instance = nullptr;
 
@@ -9,7 +10,7 @@ Player::Player(Texture* t_texture_to_use, Rect t_custom_collider_dimensions) : C
 {
 	if (Player::instance != nullptr)
 	{
-		delete Player::instance;
+		GarbageDestroyer<Character*>::GetInstance()->Destroy(instance);
 	}
 
 	type = "Player";
@@ -26,16 +27,12 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, Rect t
 {
 	if (Player::instance != nullptr)
 	{
-		delete Player::instance;
+		GarbageDestroyer<Character*>::GetInstance()->Destroy(instance);
 	}
 
 	type = "Player";
-	/*if (&mainCollider != nullptr)
-	{
-		CollisionManager::GetInstance()->UnregisterCollider(&mainCollider);
-	}*/
 
-	mainCollider = Collider(position + glm::vec2(0 + t_custom_collider_dimensions.GetPosition().x, (dimensions.y / 2) + t_custom_collider_dimensions.GetPosition().y), t_custom_collider_dimensions.IsValid() ? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this);
+	mainCollider = Collider(position + glm::vec2(0 + t_custom_collider_dimensions.GetPosition().x, (dimensions.y / 2) + t_custom_collider_dimensions.GetPosition().y), t_custom_collider_dimensions.IsValid() ? Rect(glm::vec2(0,0), glm::vec2(t_custom_collider_dimensions.GetDimensions())) : Rect(glm::vec2(0, 0), glm::vec2(t_texture_to_use->GetTextureWidth(), t_texture_to_use->GetTextureHeight() / 2)), this);
 
 	Player::instance = this;
 	colliders.push_back(&attackCollider);
@@ -48,7 +45,7 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 {
 	if (Player::instance != nullptr)
 	{
-		delete Player::instance;
+		GarbageDestroyer<Character*>::GetInstance()->Destroy(instance);
 	}
 
 	type = "Player";
@@ -66,7 +63,7 @@ Player::Player(Texture* t_texture_to_use, const glm::vec2 t_new_position, const 
 {
 	if (Player::instance != nullptr)
 	{
-		delete Player::instance;
+		GarbageDestroyer<Character*>::GetInstance()->Destroy(instance);
 	}
 
 	type = "Player";
@@ -112,7 +109,7 @@ void Player::HookCollisionEvents()
 	__hook(&Collider::OnEscape, &attackCollider, &Player::EscapeFloorCollision);
 }
 
-void Player::WasHitByEnemy(Collider* t_enemy_collider)
+void Player::WasHitByEnemy(Collider* t_enemy_collider, Collider* t_collider_hit)
 {
 	if (!isHit && t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy")
 	{
@@ -124,7 +121,7 @@ void Player::WasHitByEnemy(Collider* t_enemy_collider)
 	}
 }
 
-void Player::HasHitEnemy(Collider* t_enemy_collider)
+void Player::HasHitEnemy(Collider* t_enemy_collider, Collider* t_friendly_collider)
 {
 	if (t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy" && t_enemy_collider->GetCollisionState(&mainCollider) == CollisionState::None)
 	{
@@ -132,27 +129,27 @@ void Player::HasHitEnemy(Collider* t_enemy_collider)
 	}
 }
 
-void Player::HandleFloorCollision(Collider* t_other_collider)
+void Player::HandleFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
-	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor" && !hasJumped)
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor" && !hasJumped && t_friendly_collider != &mainCollider)
 	{
-		if (position.y >= t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y) - 20)
+		if (t_friendly_collider->GetPosition().y >= t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 20)
 		{
-			velocity.y <= 0 ? Ground(t_other_collider->GetObjectBelongingTo()->GetPosition().y + (t_other_collider->GetObjectBelongingTo()->GetDimensions().y) - 0.1) : velocity.x = 0;
+			velocity.y <= 0 ? Ground(t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 0.1) : velocity.x = 0;
 		}
 
 		else
 		{
-			if (position.x + dimensions.x / 2 <= (t_other_collider->GetObjectBelongingTo()->GetPosition().x) && velocity.x > 0)
+			if (t_friendly_collider->GetPosition().x + t_friendly_collider->GetDimensions().x / 2 <= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x) && velocity.x > 0)
 			{
-				position = glm::vec2(t_other_collider->GetPosition().x - mainCollider.GetDimensions().x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x - t_friendly_collider->GetDimensions().x - t_friendly_collider->GetOffset().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
 				acceleration = glm::vec2(0, acceleration.y);
 			}
 			
-			if (position.x >= (t_other_collider->GetObjectBelongingTo()->GetPosition().x + t_other_collider->GetObjectBelongingTo()->GetDimensions().x / 2) && velocity.x < 0)
+			if (t_friendly_collider->GetPosition().x >= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x / 2) && velocity.x < 0)
 			{
-				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x, position.y);
+				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x - t_friendly_collider->GetOffset().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
 				acceleration = glm::vec2(0, acceleration.y);
 			}
@@ -160,16 +157,16 @@ void Player::HandleFloorCollision(Collider* t_other_collider)
 	}
 }
 
-void Player::HandleRoofCollision(Collider* t_other_collider)
+void Player::HandleRoofCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
-	if (position.y + dimensions.y / 2 <= t_other_collider->GetObjectBelongingTo()->GetPosition().y && t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	if (t_friendly_collider->GetPosition().y + t_friendly_collider->GetDimensions().y / 2 <= t_other_collider->GetPosition().y && t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
 	{
-		position.y -= (position.y + dimensions.y) - (t_other_collider->GetObjectBelongingTo()->GetPosition().y) - 1;
+		position.y -= (t_friendly_collider->GetPosition().y + t_friendly_collider->GetDimensions().y) - (t_other_collider->GetPosition().y) - 1;
 		velocity.y = -20;
 	}
 }
 
-void Player::EscapeFloorCollision(Collider* t_other_collider)
+void Player::EscapeFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
 	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
 	{
@@ -216,10 +213,7 @@ void Player::Update(const float t_delta_time)
 
 Player::~Player()
 {
-	for (Collider* collider : colliders)
-	{
-		CollisionManager::GetInstance()->UnregisterCollider(collider);
-	}
+	Character::~Character();
 }
 
 Player* Player::GetInstance()

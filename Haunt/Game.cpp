@@ -59,17 +59,17 @@ void Game::Initialise(SDL_Window* t_window)
 	gameObjects.back()->SetDepth(0);
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground2"), glm::vec2(-textureManager->GetTexture("theBackground2")->GetTextureWidth() / 2, -400)));
 	gameObjects.back()->SetDepth(0.05);
-	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("character"), glm::vec2(500, 100)));
+	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("character"), glm::vec2(500, 100), Rect(glm::vec2(textureManager->GetTexture("character")->GetTextureWidth() / 4, 0), glm::vec2(textureManager->GetTexture("character")->GetTextureWidth()/2, textureManager->GetTexture("character")->GetTextureHeight()/2))));
 	gameObjects.back()->SetDepth(1, new float(2));
 	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(4000, 100)));
-	gameObjects.back()->SetDepth(1);
+	gameObjects.back()->SetDepth(1, new float(2));
 	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(1500, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 200), Rect(glm::vec2(0, 0), glm::vec2(5000, 100))));
 	gameObjects.back()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 100)));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1000, 250), glm::vec2(300, 100), Rect(glm::vec2(1000, 250), glm::vec2(300, 50))));
 	gameObjects.back()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1000, 250), glm::vec2(300, 100)));
-	gameObjects.back()->SetDepth(1);
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 100)));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 200), Rect(glm::vec2(5000, 0), glm::vec2(5000, 100))));
 	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(-100, 0), glm::vec2(100, MainCamera.GetScreenDimensions().y)));
 	gameObjects.back()->SetDepth(1);
@@ -182,10 +182,10 @@ void Game::Render(SDL_Window* t_window) const
 		instance->spriteBatch.Draw(gameObject, tint);
 	}
 
-	for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
+	/*for (Collider* collisionManager : *CollisionManager::GetInstance()->GetVectorOfColliders())
 	{
 		instance->spriteBatch.Draw(collisionManager, TextureManager::GetInstance()->GetTexture("debug"), tint);
-	}
+	}*/
 
 	instance->spriteBatch.End();
 
@@ -267,7 +267,8 @@ float Game::GetElapsedSeconds()
 	const float seconds = (currentTime - lastTime) / (60 * 10);
 	this->lastTime = currentTime;
 	
-	return seconds;
+	// If the current frame took more than a fifth of a second to update, that means there was probably a lag spike, so the counter should be restarted (prevents too much happening without the player seeing)
+	return fmod(seconds, 0.2);
 }
 
 void Game::CleanUp(SDL_Window* t_window)

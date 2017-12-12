@@ -11,6 +11,10 @@ public:
 	{
 	}
 
+	Rect(float t_new_x, float t_new_y, float t_new_width, float t_new_height) : position(glm::vec2(t_new_x, t_new_y)), dimensions(glm::vec2(t_new_width, t_new_height))
+	{
+	}
+
 	glm::vec2 TopLeft()
 	{
 		return position;

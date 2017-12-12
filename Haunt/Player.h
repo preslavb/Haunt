@@ -16,17 +16,17 @@ private:
 	// Hook up the receiver to the events in the input manager
 	void HookInputEvent();
 	void HookCollisionEvents();
-	void WasHitByEnemy(Collider* t_enemy_collider);
-	void HasHitEnemy(Collider* t_enemy_collider);
-	void HandleFloorCollision(Collider* t_other_collider) override;
-	void HandleRoofCollision(Collider* t_other_collider);
-	void EscapeFloorCollision(Collider* t_other_collider) override;
+	void WasHitByEnemy(Collider* t_other_collider, Collider* t_collider_hit);
+	void HasHitEnemy(Collider* t_enemy_collider, Collider* t_friendly_collider);
+	void HandleFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider) override;
+	void HandleRoofCollision(Collider* t_other_collider, Collider* t_friendly_collider);
+	void EscapeFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider) override;
 public:
 	// Constructors
-	Player(Texture* t_texture_to_use, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Player(Texture* t_texture_to_use, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Player(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
 	Collider* GetAttackCollider();
 	Collider* GetHitCollider();
 	~Player();

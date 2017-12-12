@@ -23,11 +23,11 @@ protected:
 	double baseSpeed = 5;
 public:
 	// Constructors taking in a texture, position (optional) ,rotation(optional) and health(optional)
-	Enemy(Texture* t_texture_to_use, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health, Rect t_custom_collider_dimensions = Rect(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+	Enemy(Texture* t_texture_to_use, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
+	Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation, int t_new_health, Rect t_custom_collider_dimensions = Rect(0, 0, 0, 0));
 	void MoveLeft(float t_delta_time);
 	void MoveRight(float t_delta_time);
 
