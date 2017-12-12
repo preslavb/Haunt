@@ -1,12 +1,12 @@
 #include "Floor.h"
 
-Floor::Floor(Texture* t_texture_to_use, glm::vec2 t_new_position) : GameObject(t_texture_to_use, t_new_position), floorCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(500, 500)), this)
+Floor::Floor(Texture* t_texture_to_use, glm::vec2 t_new_position, Rect t_custom_collider_dimensions) : GameObject(t_texture_to_use, t_new_position), floorCollider(t_new_position, Rect(glm::vec2(0, 0), glm::vec2(500, 500)), this)
 {
 	type = "Floor";
 	HookCollisionEvents();
 }
 
-Floor::Floor(Texture* t_texture_to_use, glm::vec2 t_new_position, glm::vec2 t_new_dimensions) : GameObject(t_texture_to_use, t_new_position), floorCollider(t_new_position, Rect(glm::vec2(0, 0), t_new_dimensions), this)
+Floor::Floor(Texture* t_texture_to_use, glm::vec2 t_new_position, glm::vec2 t_new_dimensions, Rect t_custom_collider_dimensions) : GameObject(t_texture_to_use, t_new_position), floorCollider(t_custom_collider_dimensions.IsValid() ? glm::vec2(t_custom_collider_dimensions.GetPosition()) : t_new_position, t_custom_collider_dimensions.IsValid()? t_custom_collider_dimensions : Rect(glm::vec2(0, 0), t_new_dimensions), this)
 {
 	type = "Floor";
 	dimensions = (t_new_dimensions);

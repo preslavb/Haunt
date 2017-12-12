@@ -13,14 +13,14 @@ void Collider::HandleCollisions(Collider* t_other_collider)
 		switch (collisionsMap.find(t_other_collider)->second)
 		{
 		case CollisionState::Entered:
-			__raise OnCollision(t_other_collider);
+			__raise OnCollision(t_other_collider, this);
 			break;
 		case CollisionState::Colliding:
 			//std::cout << "Colliding" << std::endl;
-			__raise DuringCollision(t_other_collider);
+			__raise DuringCollision(t_other_collider, this);
 			break;
 		case CollisionState::Escaped:
-			__raise OnEscape(t_other_collider);
+			__raise OnEscape(t_other_collider, this);
 			break;
 		default:
 			break;
@@ -45,6 +45,7 @@ Collider::Collider(glm::vec2 t_position, Rect t_bounding_box, GameObject* t_belo
 
 Collider::~Collider()
 {
+	CollisionManager::GetInstance()->UnregisterCollider(this);
 }
 
 // Test for collision between two colliders

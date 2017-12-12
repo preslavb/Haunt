@@ -45,9 +45,9 @@ public:
 	void SetPosition(glm::vec2 t_new_position);
 	void SetCollisionDistance(float t_new_distance);
 
-	__event void OnCollision(Collider* t_other_collider);
-	__event void DuringCollision(Collider* t_other_collider);
-	__event void OnEscape(Collider* t_other_collider);
+	__event void OnCollision(Collider* t_other_collider, Collider* t_event_collider);
+	__event void DuringCollision(Collider* t_other_collider, Collider* t_event_collider);
+	__event void OnEscape(Collider* t_other_collider, Collider* t_event_collider);
 };
 
 struct Collision
