@@ -57,7 +57,7 @@ void Game::Initialise(SDL_Window* t_window)
 
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground"), glm::vec2(-textureManager->GetTexture("theBackground")->GetTextureWidth()/2, -textureManager->GetTexture("theBackground")->GetTextureHeight() / 2)));
 	gameObjects.back()->SetDepth(0);
-	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground2"), glm::vec2(-textureManager->GetTexture("theBackground2")->GetTextureWidth() / 2, -400)));
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("theBackground2"), glm::vec2((-textureManager->GetTexture("theBackground2")->GetTextureWidth() / 2) + 100, -400)));
 	gameObjects.back()->SetDepth(0.05);
 	gameObjects.push_back(Player::GetInstance(textureManager->GetTexture("character"), glm::vec2(500, 100), Rect(glm::vec2(textureManager->GetTexture("character")->GetTextureWidth() / 4, 0), glm::vec2(textureManager->GetTexture("character")->GetTextureWidth()/2, textureManager->GetTexture("character")->GetTextureHeight()/2))));
 	gameObjects.back()->SetDepth(1, new float(2));
