@@ -108,11 +108,14 @@
     <ClInclude Include="Rect.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
     <ClInclude Include="GarbageDestroyer.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement.h">
-      <Filter>Header Files\UI</Filter>
+    <ClInclude Include="SoundsManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,5 +164,11 @@
     <ClCompile Include="UIElement.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="SoundsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

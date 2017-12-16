@@ -36,6 +36,7 @@ KeyState::KeyStates InputHandler::GetKeyState(const Uint8 t_sdl_key)
 	return GetInstance()->controlStates.find(t_sdl_key)->second.CurrentState;
 }
 
+// Get the current key state class pointer of the Key
 KeyState* InputHandler::GetKeyStateClass(const Uint8 t_sdl_key)
 {
 	return &GetInstance()->controlStates.find(t_sdl_key)->second;

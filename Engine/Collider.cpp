@@ -4,35 +4,26 @@
 #include "GameObject.h"
 #include <iostream>
 
-void Collider::HandleCollisions(Collider* t_other_collider)
+void Collider::HandleCollisions(Collider* t_other_collider, Collision* t_collision)
 {
-	std::unordered_map<Collider*, CollisionState>::const_iterator thePair = collisionsMap.find(t_other_collider);
-
-	if (thePair != collisionsMap.end())
+	// Fire the appropriate event for the state of the collision 
+	switch (t_collision->State)
 	{
-		switch (collisionsMap.find(t_other_collider)->second)
-		{
-		case CollisionState::Entered:
-			__raise OnCollision(t_other_collider, this);
-			break;
-		case CollisionState::Colliding:
-			//std::cout << "Colliding" << std::endl;
-			__raise DuringCollision(t_other_collider, this);
-			break;
-		case CollisionState::Escaped:
-			__raise OnEscape(t_other_collider, this);
-			break;
-		default:
-			break;
-		}
-	}
-	else
-	{
-		collisionsMap[t_other_collider] = CollisionState::None;
-		//t_other_collider->collisionsMap[this] = CollisionState::None;
+	case CollisionState::Entered:
+		__raise OnCollision(t_other_collider, this);
+		break;
+	case CollisionState::Colliding:
+		__raise DuringCollision(t_other_collider, this);
+		break;
+	case CollisionState::Escaped:
+		__raise OnEscape(t_other_collider, this);
+		break;
+	default:
+		break;
 	}
 }
 
+// Collider constructor
 Collider::Collider(glm::vec2 t_position, Rect t_bounding_box, GameObject* t_belonging_to) :
 	position(t_position),
 	offset(position - t_belonging_to->GetPosition()),
@@ -40,11 +31,14 @@ Collider::Collider(glm::vec2 t_position, Rect t_bounding_box, GameObject* t_belo
 	belongsTo(t_belonging_to)
 {
 	boundingBox.SetPosition(position);
+
+	// Register the collider in the collisions manager as soon as it is created
 	CollisionManager::GetInstance()->RegisterCollider(this);
 }
 
 Collider::~Collider()
 {
+	// When the collider is being destroyed, unregister it from the collision manager
 	CollisionManager::GetInstance()->UnregisterCollider(this);
 }
 
@@ -78,14 +72,17 @@ bool Collider::TestCollision(Collider* t_other_collider, bool t_already_checked)
 		(t_other_collider->boundingBox.BottomRight().x >= boundingBox.TopLeft().x && t_other_collider->boundingBox.BottomRight().x <= boundingBox.TopRight().x
 		&& t_other_collider->boundingBox.BottomRight().y >= boundingBox.TopLeft().y && t_other_collider->boundingBox.BottomRight().y <= boundingBox.BottomLeft().y))))
 	{
+		// Check if the collision wasn't already registered
 		Collision* collision = CollisionManager::GetInstance()->CheckCollision(this, t_other_collider);
 
+		// If it was, just set the state of this collider's collision map with the other collider to the returned state, then stop execution
 		if (collision != nullptr)
 		{
 			collisionsMap[t_other_collider] = collision->State;
 			return true;
 		}
 
+		// A collision wasn't found, so check the state of the collision and register it
 		switch (collisionsMap[t_other_collider])
 		{
 		case CollisionState::None:
@@ -101,14 +98,18 @@ bool Collider::TestCollision(Collider* t_other_collider, bool t_already_checked)
 			break;
 		}
 
+		// If the new collision state isnt none, register the collision in the collisions manager
 		if (collisionsMap[t_other_collider] != CollisionState::None)
 		{
 			CollisionManager::GetInstance()->RegisterCollision(new Collision(this, t_other_collider, collisionsMap[t_other_collider]));
 			return true;
 		}
 	}
+
+	// There was no overlap detected, so check for a collision registered by the other collider
 	Collision* collision = CollisionManager::GetInstance()->CheckCollision(this, t_other_collider);
 
+	// If a collision wasn't detected by the other collider, but the current state is one of active collision, that means that the colliders escaped this frame, so register the escaped collision
 	if ((collisionsMap[t_other_collider] == CollisionState::Colliding || collisionsMap[t_other_collider] == CollisionState::Entered) &&
 		collision == nullptr)
 	{
@@ -117,17 +118,19 @@ bool Collider::TestCollision(Collider* t_other_collider, bool t_already_checked)
 		return true;
 	}
 	
+	// Otherwise if there was a collision registered by the other collider, then set the current collider's state to that
 	if (collision != nullptr)
 	{
 		collisionsMap[t_other_collider] = collision->State;
 		return true;
 	}
 
-
+	// There was no collision registered between the two colliders so just set the state to none and return a false
 	collisionsMap[t_other_collider] = CollisionState::None;
 	return false;
 }
 
+// Accessors
 glm::vec2 Collider::GetPosition()
 {
 	return position;

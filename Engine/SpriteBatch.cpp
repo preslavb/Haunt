@@ -3,12 +3,12 @@
 #include <algorithm>
 #include "UIElement.h"
 
-
+// Default constructor
 SpriteBatch::SpriteBatch(): sortType(QuadSortType::TEXTURE), vertexBufferObject(0), vertexArrayObject(0)
 {
 }
 
-
+// Destructor
 SpriteBatch::~SpriteBatch()
 {
 }
@@ -41,10 +41,12 @@ void SpriteBatch::End()
 // Register a new quad to draw this frame, with a position, a uv, texture to use, sort depth and color tint
 void SpriteBatch::Draw(const glm::vec4& t_destination_rect, const glm::vec4& t_uv_rect, const GLuint t_texture, const float t_depth, const Color t_color)
 {
+	// Create a sprite quad and set the texture and depth to use
 	SpriteQuad* quad = new SpriteQuad();
 	quad->Texture = t_texture;
 	quad->Depth = t_depth;
 
+	// Set the color, position, uv and parallaxing depth of the verteces
 	quad->TopLeft.Color = t_color;
 	quad->TopLeft.SetPosition(t_destination_rect.x, t_destination_rect.y + t_destination_rect.w);
 	quad->TopLeft.SetUV(t_uv_rect.x, t_uv_rect.y + t_uv_rect.w);
@@ -65,20 +67,24 @@ void SpriteBatch::Draw(const glm::vec4& t_destination_rect, const glm::vec4& t_u
 	quad->TopRight.SetUV(t_uv_rect.x + t_uv_rect.z, t_uv_rect.y + t_uv_rect.w);
 	quad->TopRight.SetDepth(quad->Depth);
 
+	// Register the new quad
 	quads.push_back(quad);
 
 }
 // Register a new quad to draw this frame at the position of the game object, using the texture and its sort depth, and optionally a tint
 void SpriteBatch::Draw(GameObject* t_game_object, Color t_tint_to_use = Color(255, 255, 255, 255))
 {
+	// Mostly the same as the above implementation
 	SpriteQuad* quad = new SpriteQuad();
 	quad->Texture = *t_game_object->GetTexture()->GetTextureID();
+
+	// Set the order of drawing for the quad (used for actual order instead of just parallaxing)
 	quad->Depth = t_game_object->GetOrder();
 
 	glm::vec4 destinationRect = t_game_object->GetRect();
 	glm::vec4 uv = t_game_object->GetDirection() == Direction::Right ? glm::vec4(0, 0, 1, 1) : glm::vec4(0, 0, -1, 1);
 
-
+	// Same as above, using the depth specified in the object (NOT THE ORDER)
 	quad->TopLeft.Color = t_tint_to_use;
 	quad->TopLeft.SetPosition(destinationRect.x, destinationRect.y + destinationRect.w);
 	quad->TopLeft.SetUV(uv.x, uv.y + uv.w);
@@ -102,11 +108,13 @@ void SpriteBatch::Draw(GameObject* t_game_object, Color t_tint_to_use = Color(25
 	quads.push_back(quad);
 }
 
+// Draw the UI element to the screen at its position with an optional tint
 void SpriteBatch::Draw(UIElement* t_ui_element, Color t_tint_to_use = Color(255, 255, 255, 255))
 {
+	// Same as above implementation, without depth options
 	SpriteQuad* quad = new SpriteQuad();
 	quad->Texture = *t_ui_element->GetTexture()->GetTextureID();
-	quad->Depth = t_ui_element->GetTexture()->GetDepth();
+	quad->Depth = 1;
 
 	glm::vec4 destinationRect = t_ui_element->GetRect();
 	glm::vec4 uv(0, 0, 1, 1);
@@ -133,9 +141,10 @@ void SpriteBatch::Draw(UIElement* t_ui_element, Color t_tint_to_use = Color(255,
 
 void SpriteBatch::Draw(Collider* t_collider, Texture* t_texture, Color t_tint_to_use)
 {
+	// Same as drawing a game object
 	SpriteQuad* quad = new SpriteQuad();
 	quad->Texture = *t_texture->GetTextureID();
-	quad->Depth = t_texture->GetOrder();
+	quad->Depth = t_collider->GetObjectBelongingTo()->GetOrder();
 
 	glm::vec4 destinationRect = glm::vec4(t_collider->GetRect().TopLeft().x, t_collider->GetRect().TopLeft().y, t_collider->GetRect().GetDimensions().x,t_collider->GetRect().GetDimensions().y);
 	glm::vec4 uv(0, 0, 1, 1);
@@ -144,22 +153,22 @@ void SpriteBatch::Draw(Collider* t_collider, Texture* t_texture, Color t_tint_to
 	quad->TopLeft.Color = t_tint_to_use;
 	quad->TopLeft.SetPosition(destinationRect.x, destinationRect.y + destinationRect.w);
 	quad->TopLeft.SetUV(uv.x, uv.y + uv.w);
-	quad->TopLeft.SetDepth(t_texture->GetDepth());
+	quad->TopLeft.SetDepth(t_collider->GetObjectBelongingTo()->GetDepth());
 
 	quad->BottomLeft.Color = t_tint_to_use;
 	quad->BottomLeft.SetPosition(destinationRect.x, destinationRect.y);
 	quad->BottomLeft.SetUV(uv.x, uv.y);
-	quad->BottomLeft.SetDepth(t_texture->GetDepth());
+	quad->BottomLeft.SetDepth(t_collider->GetObjectBelongingTo()->GetDepth());
 
 	quad->BottomRight.Color = t_tint_to_use;
 	quad->BottomRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y);
 	quad->BottomRight.SetUV(uv.x + uv.z, uv.y);
-	quad->BottomRight.SetDepth(t_texture->GetDepth());
+	quad->BottomRight.SetDepth(t_collider->GetObjectBelongingTo()->GetDepth());
 
 	quad->TopRight.Color = t_tint_to_use;
 	quad->TopRight.SetPosition(destinationRect.x + destinationRect.z, destinationRect.y + destinationRect.w);
 	quad->TopRight.SetUV(uv.x + uv.z, uv.y + uv.w);
-	quad->TopRight.SetDepth(t_texture->GetDepth());
+	quad->TopRight.SetDepth(t_collider->GetObjectBelongingTo()->GetDepth());
 
 	quads.push_back(quad);
 }
@@ -178,6 +187,7 @@ void SpriteBatch::RenderBatches()
 		glDrawArrays(GL_TRIANGLES, renderBatches[i].Offset, renderBatches[i].NumberOfVerts);
 	}
 
+	// Unbind the texture
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// Unbind the array of vertices
@@ -215,7 +225,7 @@ void SpriteBatch::CreateRenderBatches()
 	vertices[currentVert++] = quads[0]->TopLeft;
 	offset += 6;
 
-	// Create the other batches, melding the vertices together if the texture matches the previous frame texture
+	// Create the other batches, melding the vertices together if the texture matches the previous quad texture
 	for (int currentQuad = 1; currentQuad < quads.size(); currentQuad++)
 	{
 		if (quads[currentQuad]->Texture != quads[currentQuad-1]->Texture)
@@ -265,7 +275,7 @@ void SpriteBatch::CreateVertexArray()
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 
-	// Enable the attributes of the bound vertices
+	// Enable the shader attributes of the vertices
 	glEnableVertexAttribArray(0);
 
 	glEnableVertexAttribArray(1);
@@ -274,7 +284,7 @@ void SpriteBatch::CreateVertexArray()
 
 	glEnableVertexAttribArray(3);
 
-	// Set the vertex pointers to use in the shader to the appropriate vertex position, color and uvs
+	// Set the vertex pointers to use in the shader to the appropriate vertex position, color, uvs and parallax depth
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Position));
 
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void *)offsetof(Vertex, Color));

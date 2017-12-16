@@ -28,6 +28,8 @@ public:
 
 	// Add a coroutine to the manager
 	static Coroutine<T>* StartCoroutine(Coroutine<T> t_new_coroutine);
+
+	// Remove a coroutine from the manager
 	void StopCoroutine(Coroutine<T>* t_coroutine);
 };
 
@@ -90,6 +92,7 @@ Coroutine<T>* CoroutineManager<T>::StartCoroutine(Coroutine<T> t_new_coroutine)
 template<typename T>
 void CoroutineManager<T>::StopCoroutine(Coroutine<T>* t_coroutine)
 {
+	// Iterate through the coroutines storage. If the given coroutine is found, erase it from the coroutines vector
 	for (vector<Coroutine<T>>::iterator coroutine = coroutinesStorage.begin(); coroutine != coroutinesStorage.end(); ++coroutine)
 	{
 		if (&(*coroutine) == t_coroutine)

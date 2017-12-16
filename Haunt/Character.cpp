@@ -2,9 +2,11 @@
 #include "Game.h"
 #include "Engine/CollisionManager.h"
 #include "Engine/GarbageDestroyer.h"
+#include "Engine/SoundsManager.h"
 
 void Character::HookCharacterCollisionEvents()
 {
+	// Set the ground and unground handlers for the main collider collision events
 	__hook(&Collider::OnCollision, &mainCollider, &Character::HandleFloorCollision);
 	__hook(&Collider::OnEscape, &mainCollider, &Character::EscapeFloorCollision);
 }
@@ -55,11 +57,7 @@ Character::Character(Texture* t_texture_to_use, const glm::vec2 t_new_position, 
 
 Character::~Character()
 {
-	/*for (Collider* collider : colliders)
-	{
-		CollisionManager::GetInstance()->UnregisterCollider(collider);
-	}*/
-
+	// Find the current object in the GameObject vector in the game and erase it
 	for (vector<GameObject*>::iterator it = Game::GetInstance()->GetGameObjects()->begin(); it != Game::GetInstance()->GetGameObjects()->end(); ++it)
 	{
 		if ((*it) == this)
@@ -73,42 +71,62 @@ Character::~Character()
 
 void Character::MoveRight(float t_delta_time)
 {
+	// Set the flag for moving in the direction
 	this->isMovingRight = true;
 	this->isMoving = true;
 
+	// If the character isn't currently moving in the opposite direction, calculate the velocity and acceleration to move with
 	if (!isMovingLeft && !isHit)
 	{
+		// Play the movement sound for the player if the object is the player (should be reworked if there are more types of game objects)
+		type == "Player" ? SoundsManager::GetInstance()->PlaySoundEffectContinuous("Whoosh") : 0;
+
+		// Set the initial velocity to the base speed
 		this->velocity.x = baseSpeed;
 
+		// Increment the acceleration by the normal run acceleration of the character, scaled by the meter value defined in constants and scaled by delta time, so that movement is uniform for all framerates
 		if (this->acceleration.x < MAX_ACCELERATION)
 		{
 			this->acceleration.x += RUN_ACCELERATION * _METER * t_delta_time;
 		}
 
+		// Set the texture direction to draw to right
 		this->currentDirection = Direction::Right;
 	}
 }
 
 void Character::MoveLeft(float t_delta_time)
 {
+	// Set the flag for moving in the direction
 	this->isMovingLeft = true;
 	this->isMoving = true;
 
+	// If the character isn't currently moving in the opposite direction, calculate the velocity and acceleration to move with
 	if (!isMovingRight && !isHit)
 	{
+		// Play the movement sound for the player if the object is the player (should be reworked if there are more types of game objects)
+		type == "Player" ? SoundsManager::GetInstance()->PlaySoundEffectContinuous("Whoosh") : 0;
+
+		// Set the initial velocity to the opposite base speed
 		this->velocity.x = -baseSpeed;
 
+		// Decrement the acceleration by the normal run acceleration of the character, scaled by the meter value defined in constants and scaled by delta time, so that movement is uniform for all framerates
 		if (this->acceleration.x > -MAX_ACCELERATION)
 		{
 			this->acceleration.x -= RUN_ACCELERATION * _METER * t_delta_time;
 		}
 
+		// Set the texture direction to draw to left
 		this->currentDirection = Direction::Left;
 	}
 }
 
 void Character::StopMoving(float t_delta_time)
 {
+	// Stop playing the movement sound effect for the player
+	type == "Player" ? SoundsManager::GetInstance()->StopSoundEffect("Whoosh") : 0;
+
+	// Disable all movement flags
 	this->isMoving = false;
 	this->isMovingLeft = false;
 	this->isMovingRight = false;
@@ -116,16 +134,21 @@ void Character::StopMoving(float t_delta_time)
 
 void Character::Jump(float t_delta_time)
 {
+	// If the character is currently on the ground, set the vertical velocity to the jump velocity and set the appropriate flags
 	if (grounded)
 	{
+		// Play the jump sound (this is supposed to be just for the player but since enemies in the game don't jump, the specification isn't necessary)
+		SoundsManager::GetInstance()->PlaySoundEffect("Jump");
 		this->grounded = false;
 		this->hasJumped = true;
 		this->velocity.y = JUMP_FORCE;
 	}
 }
 
+// Force a jump even if the character isn't grounded
 void Character::ForceJump(Collider* t_enemy_collider)
 {
+	// If the collision that foced the jump involved an enemy and the player/character attacking wasn't hit in the interaction, force the jump
 	if (t_enemy_collider->GetObjectBelongingTo()->GetType() == "Enemy")
 	{
 		if (!isHit)
@@ -139,6 +162,7 @@ void Character::ForceJump(Collider* t_enemy_collider)
 
 void Character::LimitJump(float t_delta_time)
 {
+	// If the character is moving upward faster than the jump limit when the key was released, limit the velocity and continue to apply gravity afterwards (this enables the player to control their jump height)
 	if (!grounded && velocity.y > JUMP_LIMIT)
 	{
 		velocity.y = JUMP_LIMIT;
@@ -159,11 +183,10 @@ void Character::Update(const float t_delta_time)
 		{
 			acceleration.x = 0;
 		}
-		// Otherwise, apply friction to their acceleration value
+		// Otherwise, apply friction to their acceleration value, scaled by the meter value and the delta time
 		else
 		{
 			this->acceleration.x -= _FRICTION * _METER * Compare(acceleration.x, 0) * t_delta_time;
-			//this->velocity.x = acceleration.x;
 		}
 	}
 
@@ -172,11 +195,13 @@ void Character::Update(const float t_delta_time)
 	{
 		this->velocity.y -= _GRAVITY * _METER * t_delta_time;
 
-		/*if (position.y + dimensions.y < 0)
+		// If a character falls below the screen bottom, they die
+		if (position.y + dimensions.y < 0)
 		{
 			Die();
-		}*/
+		}
 	}
+	// Otherwise, the character isn't moving deliberately so set their velocity to 0
 	else
 	{
 		this->velocity.y = 0;
@@ -191,6 +216,7 @@ void Character::Update(const float t_delta_time)
 
 void Character::Ground(float t_ground_height)
 {
+	// If the character hasn't jumped this frame, ground them to the specified ground height
 	if (!hasJumped)
 	{
 		grounded = true;
@@ -201,6 +227,7 @@ void Character::Ground(float t_ground_height)
 
 void Character::Unground()
 {
+	// Enable vertical physics for the character
 	grounded = false;
 }
 
@@ -209,6 +236,7 @@ void Character::Move(const glm::vec2 t_offset)
 	// Offset the object by the specified std::vec2
 	this->SetPosition(this->GetPosition() + t_offset);
 
+	// Move the colliders to the new position of the object, and offset them as they were before
 	for (Collider* collider : colliders)
 	{
 		collider->SetPosition(position + collider->GetOffset());
@@ -217,8 +245,10 @@ void Character::Move(const glm::vec2 t_offset)
 
 void Character::SetPosition(glm::vec2 t_new_position)
 {
+	// Move the character to the specified position
 	position = t_new_position;
 
+	// Move the colliders to the new position of the object, and offset them as they were before
 	for (Collider* collider : colliders)
 	{
 		collider->SetPosition(t_new_position + collider->GetOffset());
@@ -227,6 +257,7 @@ void Character::SetPosition(glm::vec2 t_new_position)
 
 void Character::WasHitByPlayer(Collider* t_player_collider, Collider* t_collider_hit)
 {
+	// If the player hit the character, and the player main collider wasn't hit back, apply the damage to the character and force a jump on the player
 	if (Player::GetInstance()->GetHitCollider()->GetCollisionState(&mainCollider) == CollisionState::None && t_player_collider->GetObjectBelongingTo()->GetType() == "Player")
 	{
 		std::cout << "Character was hit by the player, dealing 100 DMG" << std::endl;
@@ -237,28 +268,38 @@ void Character::WasHitByPlayer(Collider* t_player_collider, Collider* t_collider
 
 void Character::HandleFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
+	// If the collision is with a floor, increment the number of floors colliding with right now and check the collision type
 	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
 	{
 		floorsCollidingWith++;
+
+		// The character fell on top of the floor, so ground them to the floor
 		if (t_friendly_collider->GetPosition().y >= t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 20)
 		{
 			velocity.y <= 0 ? Ground(t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y)) : velocity.x = 0;
 		}
 
+		// Otherwise, the collision happened to the side of a floor, acting as a wall, so stop the horizontal movement of the character
 		else
 		{
 			if (t_friendly_collider->GetPosition().x <= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x / 2))
 			{
+				// Turn around when colliding with a wall
 				isMovingLeft = true;
 				velocity = glm::vec2(-velocity.x, velocity.y);
 				acceleration = glm::vec2(-acceleration.x, acceleration.y);
+
+				// Make sure that the character isn't stuck inside the wall by moving them out of the collider
 				position = glm::vec2(t_other_collider->GetPosition().x - t_friendly_collider->GetDimensions().x, position.y);
 			}
 			else if (t_friendly_collider->GetPosition().x >= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x / 2))
 			{
+				// Turn around when colliding with a wall
 				isMovingLeft = false;
 				velocity = glm::vec2(-velocity.x, velocity.y);
 				acceleration = glm::vec2(-acceleration.x, acceleration.y);
+
+				// Make sure that the character isn't stuck inside the wall by moving them out of the collider
 				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x, position.y);
 			}
 		}
@@ -267,9 +308,12 @@ void Character::HandleFloorCollision(Collider* t_other_collider, Collider* t_fri
 
 void Character::EscapeFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
+	// If the character escaped from a floor collision, check if there are any other floors that the character is colliding
 	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
 	{
 		floorsCollidingWith--;
+
+		// If there aren't any other floors colliding with this character, unground them and let them fall
 		if (floorsCollidingWith <= 0) Unground();
 	}
 }
@@ -285,6 +329,7 @@ void Character::Damage(const int t_amount_of_damage)
 	this->health -= t_amount_of_damage;
 	this->isHit = true;
 
+	// If the health falls below 0, kill the character
 	if (health <= 0)
 	{
 		Die();
@@ -293,6 +338,13 @@ void Character::Damage(const int t_amount_of_damage)
 
 void Character::Die()
 {
+	// Play the squash sound for dying characters
+	SoundsManager::GetInstance()->PlaySoundEffect("Squash");
+
+	// If the player died, end the game and display the score
+	type == "Player" ? Game::GetInstance()->EndGame(nullptr, nullptr) : 0;
+
+	// Destroy the character that just died
 	GarbageDestroyer<Character*>::GetInstance()->Destroy(this);
 }
 

@@ -5,9 +5,9 @@
 void Enemy::HookEnemyEvents()
 {
 	__hook(&Collider::OnCollision, &mainCollider, &Enemy::WasHitByPlayer);
-	//__hook(&Collider::OnCollision, Player::GetInstance()->GetAttackCollider(), &Enemy::WasHitByPlayer);
 }
 
+// Constructors
 Enemy::Enemy(Texture* t_texture_to_use, Rect t_custom_collider_dimensions) : Character(t_texture_to_use, t_custom_collider_dimensions)
 {
 	type = "Enemy";
@@ -43,6 +43,7 @@ Enemy::Enemy(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_ro
 	HookEnemyEvents();
 }
 
+// Same as the normal movement functions for a character but doesn't require the isHit check
 void Enemy::MoveLeft(float t_delta_time)
 {
 	this->isMovingLeft = true;
@@ -50,6 +51,8 @@ void Enemy::MoveLeft(float t_delta_time)
 
 	if (!(isMovingRight))
 	{
+		currentDirection = Direction::Left;
+
 		this->velocity.x = -baseSpeed;
 
 		if (this->acceleration.x > -MAX_ACCELERATION)
@@ -59,6 +62,7 @@ void Enemy::MoveLeft(float t_delta_time)
 	}
 }
 
+// Same as the normal movement functions for a character but doesn't require the isHit check
 void Enemy::MoveRight(float t_delta_time)
 {
 	this->isMovingRight = true;
@@ -66,6 +70,8 @@ void Enemy::MoveRight(float t_delta_time)
 
 	if (!isMovingLeft)
 	{
+		currentDirection = Direction::Right;
+
 		this->velocity.x = baseSpeed;
 
 		if (this->acceleration.x < MAX_ACCELERATION)
@@ -77,18 +83,22 @@ void Enemy::MoveRight(float t_delta_time)
 
 void Enemy::Die()
 {
+	// When an enemy dies, add 100 score to the player
 	Game::GetInstance()->AddScore();
 
+	// Handle the rest of the death with the character implementation
 	Character::Die();
 }
 
 void Enemy::Update(float t_delta_time)
 {
+	// If the enemy is on screen, enable their movement
 	if (IsOnScreen(Camera2D::GetMainCamera()))
 	{
 		isEnabled = true;
 	}
 
+	// If the enemy is enabled, move in the available direction, then update it as normal with the character implementation
 	if (isEnabled)
 	{
 		isMovingLeft ? MoveLeft(t_delta_time) : MoveRight(t_delta_time);

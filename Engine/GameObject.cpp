@@ -3,44 +3,15 @@
 
 Uint16 GameObject::gameObjectsInitialized = 0;
 
-// Constructors (all require a texture for the sprite)
-GameObject::GameObject(Texture* t_texture_to_use) : position(0, 0), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
+// Constructor which takes in a texture, position, depth and rotation
+GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_depth, const float t_new_order, const float t_new_rotation): rotation(t_new_rotation), texture(t_texture_to_use), position(t_new_position), id(gameObjectsInitialized), order(t_new_order), dimensions(glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight()))
 {
+
+	// A game object was created, so increase the value of the initialized game objects by one
 	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
 }
 
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position) : position(t_new_position), rotation(0), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
-{
-	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
-}
-
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth): rotation(0), texture(t_texture_to_use), position(t_new_position), id(gameObjectsInitialized), order(1)
-{
-	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
-	texture->SetDepth(t_new_depth);
-}
-
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
-{
-	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
-}
-
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale) : position(t_new_position), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
-{
-	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
-}
-
-GameObject::GameObject(Texture* t_texture_to_use, const glm::vec2 t_new_position, const glm::vec2 t_new_scale, const float t_new_rotation) : position(t_new_position), rotation(t_new_rotation), scale(t_new_scale), texture(t_texture_to_use), id(gameObjectsInitialized), order(1)
-{
-	gameObjectsInitialized++;
-	dimensions = glm::vec2(texture->GetTextureWidth(), texture->GetTextureHeight());
-}
-
+// Game object destructor
 GameObject::~GameObject()
 {
 }
@@ -65,17 +36,20 @@ void GameObject::SetScale(const glm::vec2 t_new_scale)
 
 void GameObject::SetOrder(const float t_new_order)
 {
+	// Set the order to the passed float value
 	order = t_new_order;
 }
 
 void GameObject::SetDepth(const float t_new_depth, const float* t_new_order)
 {
+	// Set the depth to the passed float value. If an order is also specified, use that instead of the depth for ordering the sprite on screen
 	depth = t_new_depth;
 	order = t_new_order != nullptr ? *t_new_order : t_new_depth;
 }
 
 void GameObject::SetDirection(Direction t_new_direction)
 {
+	// Set the current direction to the value specified
 	currentDirection = t_new_direction;
 }
 
@@ -85,6 +59,7 @@ glm::vec2 GameObject::GetPosition() const
 	return this->position;
 }
 
+// TODO: Should change it to use the Rect class
 glm::vec4 GameObject::GetRect() const
 {
 	// Return the current position of the object and its dimensions
@@ -107,26 +82,31 @@ glm::vec2 GameObject::GetScale() const
 
 glm::vec2 GameObject::GetDimensions() const
 {
+	// Return the dimensions of the object
 	return this->dimensions;
 }
 
 Texture* GameObject::GetTexture()
 {
+	// Return the reference to the texture used to display the object
 	return this->texture;
 }
 
 float GameObject::GetOrder()
 {
+	// Return the display order of the object
 	return order;
 }
 
 float GameObject::GetDepth()
 {
+	// Return the parallaxing depth of the object
 	return depth;
 }
 
 Direction GameObject::GetDirection()
 {
+	// Return the direction the object is facing
 	return currentDirection;
 }
 
@@ -165,6 +145,7 @@ void GameObject::Update(float t_delta_time)
 	// This method would always be overwritten
 }
 
+// Check if the object is on screen relative to the camera specified
 bool GameObject::IsOnScreen(Camera2D* t_main_camera) const
 {
 	if (abs((abs(position.x) + texture->GetTextureWidth()/2) - t_main_camera->GetPosition().x) < t_main_camera->GetScreenDimensions().x / 2)

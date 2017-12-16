@@ -2,27 +2,12 @@
 #include "GameConstants.h"
 
 // Constructors, using the GameObject constructors
-Dynamic::Dynamic(Texture* t_texture_to_use) : GameObject(t_texture_to_use)
+Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_depth, const float t_new_order, const float t_new_rotation) : GameObject(t_texture_to_use, t_new_position, t_new_depth, t_new_order, t_new_rotation)
 {
 	type = "Dynamic";
 }
 
-Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position) : GameObject(t_texture_to_use, t_new_position)
-{
-	type = "Dynamic";
-}
-
-Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position, const int t_new_depth) : GameObject(t_texture_to_use, t_new_position, t_new_depth)
-{
-	type = "Dynamic";
-}
-
-Dynamic::Dynamic(Texture* t_texture_to_use, const glm::vec2 t_new_position, const float t_new_rotation) : GameObject(
-	t_texture_to_use, t_new_position, t_new_rotation)
-{
-	type = "Dynamic";
-}
-
+// Dynamic object destructor
 Dynamic::~Dynamic()
 {
 }

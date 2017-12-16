@@ -9,12 +9,10 @@ class Dynamic : public GameObject
 protected:
 	// Whether the object is on the ground
 	bool grounded;
+
 public:
-	// Constructors taking in a texture, position (optional) and rotation(optional)
-	Dynamic(Texture* t_texture_to_use);
-	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position);
-	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, float t_new_rotation);
-	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position, int t_new_depth);
+	// Constructors taking in a texture, position (optional), depth(optional), order(optional) and rotation(optional)
+	Dynamic(Texture* t_texture_to_use, glm::vec2 t_new_position = glm::vec2(0, 0), float t_new_depth = 1, float t_new_order = 1, float t_new_rotation = 0);
 	~Dynamic();
 
 	// Move the object by offsetting them with a Vector2D value

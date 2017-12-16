@@ -1,11 +1,15 @@
 #pragma once
 
+// The position structure for the vertex (8 bytes)
 struct Position
 {
-	float X;
-	float Y;
+	// 32 bits
+	GLfloat X;
+	// 32 bits
+	GLfloat Y;
 };
 
+// The color structure (4 bytes)
 struct Color
 {
 	Color() : R(255), G(255), B(255), A(255)
@@ -15,29 +19,33 @@ struct Color
 	{
 	}
 
+	// Byte x 4
 	GLubyte R;
 	GLubyte G;
 	GLubyte B;
 	GLubyte A;
 };
 
+// The UV coordinates of a vertex (8 bytes)
 struct UV
 {
-	float U;
-	float V;
+	// 32 bits x 2
+	GLfloat U;
+	GLfloat V;
 };
 
+// The vertex structure (24 bytes) + padding of 8 bytes
 struct Vertex
 {
-	Position Position;
-
+	// 4 bytes
 	Color Color;
-
+	// 4 bytes
+	GLfloat Depth = 1;
+	// 8 bytes
+	Position Position;
+	// 8 bytes
 	UV UVCoordinates;
-
-	float Depth = 1;
-
-	float padding[7];
+	
 
 	void SetPosition(float t_new_x, float t_new_y)
 	{
@@ -63,4 +71,7 @@ struct Vertex
 	{
 		Depth = t_new_depth;
 	}
+private:
+	// 12 bytes padding
+	GLfloat padding[2];
 };

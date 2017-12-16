@@ -7,7 +7,6 @@ Texture.cpp
 */
 #include "Texture.h"
 #include "CoroutineManager.h"
-#include "GarbageDestroyer.h"
 
 using namespace std;
 
@@ -17,7 +16,7 @@ using namespace std;
 - Is always called, thus ensures all OpenGL Texture ID objects are in a consistent state.
 =================
 */
-Texture::Texture(): depth(1)
+Texture::Texture()
 {
 	sdlTextureId = nullptr;
 }
@@ -29,7 +28,7 @@ Texture::Texture(): depth(1)
 * @param fileName The image file to load
 =================
 */
-Texture::Texture(const LPCSTR t_file_name) : depth(1)
+Texture::Texture(const LPCSTR t_file_name)
 {
 	LoadTexture(t_file_name);
 }
@@ -57,39 +56,52 @@ bool Texture::LoadTexture(const LPCSTR t_file_name) // create the texture for us
 	// Check the Texture has been created from the surface
 	if (sdlTextureId != nullptr)
 	{
+		// The texture has been safely loaded
 		std::cout << "Texture '" << t_file_name << "' successfully loaded. " << (int)sdlTextureId->format->BitsPerPixel << endl;
 
+		// Initialize the value to store the texture
 		GLuint glTexture;
 
+		// Generate a texture for the GL ID
 		glGenTextures(1, &glTexture);
 
+		// Bind the texture so that we may alter it
 		glBindTexture(GL_TEXTURE_2D, glTexture);
 
+		// Set the appropriate mode (this is important, otherwise the alpha chanel could be lost and cause severe distortion in the image)
 		int mode = (int)sdlTextureId->format->BitsPerPixel == 32 ? GL_RGBA : GL_RGB;
 
+		// Feed the pixels of the SDL surface to the newly created GL Texture, using the mode previously specified
 		glTexImage2D(GL_TEXTURE_2D, 0, mode, sdlTextureId->w, sdlTextureId->h, 0, mode, GL_UNSIGNED_BYTE, sdlTextureId->pixels);
 
+		// Make the texture tile if the UVs are not standard
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
+		// Make sure that standard UVs are clamped to the edge of the texture (causes a one pixel wrap around otherwise)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
+		// Set the magnifying and minifying functions for scaling of the texture
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
+		// Generate the mipmap for the texture (used for minifying)
 		glGenerateMipmap(GL_TEXTURE_2D);
 
+		// Unbind the texture as it no longer needs to be altered
 		glBindTexture(GL_TEXTURE_2D, 0);
 
+		// Set the GL texture ID to be this one
 		this->glTextureId = glTexture;
 
+		// Set the dimensions based on the SDL surface dimensions
 		this->width = sdlTextureId->w;
-
 		this->height = sdlTextureId->h;
 
+		// Return that the texture was created successfully
 		return true;
 	}	
 	
+	// The texture was not created successfully, so break out of the program with an error
 	cout << "Texture '" << t_file_name << "' could not be loaded!!" << endl;
 
 	cout << SDL_GetError() << endl;
@@ -130,20 +142,4 @@ int Texture::GetTextureHeight() const
 // Return height of texture;
 {
 	return sdlTextureId->clip_rect.h;
-}
-
-float Texture::GetDepth()
-{
-	return depth;
-}
-
-float Texture::GetOrder()
-{
-	return order;
-}
-
-void Texture::SetDepth(const float t_new_depth, const float* t_new_order)
-{
-	depth = t_new_depth;
-	order = t_new_order != nullptr ? *t_new_order : t_new_depth;
 }

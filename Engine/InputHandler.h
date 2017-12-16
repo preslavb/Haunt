@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 // The controls that the game could ever care about
-static const Uint8 REGISTERED_CONTROLS[] = { SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_DOWN, SDLK_ESCAPE };
+static const Uint8 REGISTERED_CONTROLS[] = { SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_DOWN, SDLK_ESCAPE, SDLK_r };
 
 // A singleton input handler
 class InputHandler
