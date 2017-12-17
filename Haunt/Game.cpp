@@ -92,11 +92,45 @@ void Game::Initialise(SDL_Window* t_window)
 	gameObjects.back()->SetDepth(1, new float(2));
 	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(4000, 100)));
 	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(5200, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(5300, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(5400, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(5500, 100)));
+	gameObjects.back()->SetDepth(1, new float(2));
 	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(1500, 100)));
 	gameObjects.back()->SetDepth(1, new float(2));
-	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(5000, 200), Rect(glm::vec2(0, 0), glm::vec2(5000, 100))));
+	gameObjects.push_back(new Enemy(textureManager->GetTexture("enemy"), glm::vec2(1500, 1050)));
+	gameObjects.back()->SetDepth(1, new float(2));
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(0, 0), glm::vec2(1600, 200), Rect(glm::vec2(0, 0), glm::vec2(1600, 100))));
 	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1000, 250), glm::vec2(300, 100), Rect(glm::vec2(1000, 250), glm::vec2(300, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1500, 250), glm::vec2(300, 100), Rect(glm::vec2(1500, 250), glm::vec2(300, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(2000, 250), glm::vec2(50, 100), Rect(glm::vec2(2000, 250), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1800, 400), glm::vec2(50, 100), Rect(glm::vec2(1800, 400), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(2400, 650), glm::vec2(50, 100), Rect(glm::vec2(2400, 650), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(2600, 350), glm::vec2(600, 100), Rect(glm::vec2(2600, 350), glm::vec2(600, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(3000, 200), glm::vec2(600, 100), Rect(glm::vec2(3000, 200), glm::vec2(600, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(3500, 0), glm::vec2(2000, 200), Rect(glm::vec2(3500, 0), glm::vec2(2000, 100))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 200), glm::vec2(600, 100), Rect(glm::vec2(5000, 200), glm::vec2(600, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1600, 650), glm::vec2(50, 100), Rect(glm::vec2(1600, 650), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1200, 650), glm::vec2(50, 100), Rect(glm::vec2(1200, 650), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1200, 800), glm::vec2(50, 100), Rect(glm::vec2(1200, 800), glm::vec2(50, 50))));
+	gameObjects.back()->SetDepth(1);
+	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(1500, 1000), glm::vec2(300, 100), Rect(glm::vec2(1500, 1000), glm::vec2(300, 50))));
 	gameObjects.back()->SetDepth(1);
 	gameObjects.push_back(new Floor(textureManager->GetTexture("grass"), glm::vec2(5000, 0), glm::vec2(5000, 200), Rect(glm::vec2(5000, 0), glm::vec2(5000, 100))));
 	gameObjects.back()->SetDepth(1);
@@ -107,7 +141,7 @@ void Game::Initialise(SDL_Window* t_window)
 	gameObjects.back()->SetType("EndGame");
 	gameObjects.push_back(new GameObject(textureManager->GetTexture("tree1"), glm::vec2(200, 10)));
 	gameObjects.back()->SetDepth(1);
-	gameObjects.push_back(new GameObject(textureManager->GetTexture("tree1"), glm::vec2(6000, 10)));
+	gameObjects.push_back(new GameObject(textureManager->GetTexture("tree1"), glm::vec2(6500, 10)));
 	gameObjects.back()->SetDepth(1.3, new float(3));
 	//---------------- Populate the game world with different kinds of game objects ----------//
 
@@ -164,6 +198,9 @@ void Game::Initialise(SDL_Window* t_window)
 
 	// Start counting time after the initialization of the game finishes
 	lastTime = SDL_GetTicks();
+
+	// Update the collision manager pre-update
+	CollisionManager::GetInstance()->Update();
 }
 
 void Game::Reset(float t_delta_time)
@@ -277,8 +314,8 @@ void Game::Render(SDL_Window* t_window) const
 	/*for (Collider* collisionManager : *CollisionManager::GetInstance()->GetListOfColliders())
 	{
 		instance->spriteBatch.Draw(collisionManager, TextureManager::GetInstance()->GetTexture("debug"), tint);
-	}*/
-
+	}
+*/
 	// End the current spriteBatch
 	instance->spriteBatch.End();
 
@@ -336,9 +373,6 @@ void Game::Update()
 {
 	// Update all of the necessary coroutine managers
 	CoroutineManager<bool>::Update();
-
-	// Update the collision manager
-	CollisionManager::GetInstance()->Update();
 }
 
 void Game::Update(float t_delta_time)
@@ -366,6 +400,9 @@ void Game::Update(float t_delta_time)
 		runTime -= 1;
 		frames = 1;
 	}
+
+	// Update the collision manager
+	CollisionManager::GetInstance()->Update();
 
 	// At the end of the frame, clear all necessary garbage
 	GarbageDestroyer<Collider*>::GetInstance()->ClearGarbage();

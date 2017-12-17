@@ -169,10 +169,10 @@ void Player::HasHitEnemy(Collider* t_enemy_collider, Collider* t_friendly_collid
 void Player::HandleFloorCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
 	// Check for the type of floor collision if the other collider is a floor
-	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor"  && t_friendly_collider != &mainCollider && !hasJumped)
+	if (t_other_collider->GetObjectBelongingTo()->GetType() == "Floor" && !hasJumped)
 	{
 		// The player has not jumped this frame and has landed on the floor (with the bottom collider)
-		if (t_friendly_collider->GetPosition().y >= t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 20)
+		if (t_friendly_collider->GetPosition().y >= t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 20 + (velocity.y / 10) && (velocity.y <= 0 || acceleration.y <= 0) && t_friendly_collider != &mainCollider)
 		{
 			// Stop the vertical movement of the player and ground them to the floor
 			velocity.y <= 0 ? Ground(t_other_collider->GetPosition().y + (t_other_collider->GetDimensions().y) - 0.1) : velocity.x = 0;
@@ -182,7 +182,7 @@ void Player::HandleFloorCollision(Collider* t_other_collider, Collider* t_friend
 		else
 		{
 			// The player hit the left side of a wall, so stop their horizontal movement and move them out of the collision
-			if (t_friendly_collider->GetPosition().x + t_friendly_collider->GetDimensions().x / 2 <= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x) && velocity.x > 0)
+			if (t_friendly_collider->GetPosition().x + t_friendly_collider->GetDimensions().x / 2 <= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x) && (velocity.x > 0 || acceleration.x > 0))
 			{
 				position = glm::vec2(t_other_collider->GetPosition().x - t_friendly_collider->GetDimensions().x - t_friendly_collider->GetOffset().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
@@ -190,7 +190,7 @@ void Player::HandleFloorCollision(Collider* t_other_collider, Collider* t_friend
 			}
 			
 			// The player hit the right side of a wall, so stop their horizontal movement and move them out of the collision
-			if (t_friendly_collider->GetPosition().x >= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x / 2) && velocity.x < 0)
+			if (t_friendly_collider->GetPosition().x >= (t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x / 2) && (velocity.x < 0 || acceleration.x < 0))
 			{
 				position = glm::vec2(t_other_collider->GetPosition().x + t_other_collider->GetDimensions().x - t_friendly_collider->GetOffset().x, position.y);
 				velocity = glm::vec2(0, velocity.y);
@@ -203,7 +203,7 @@ void Player::HandleFloorCollision(Collider* t_other_collider, Collider* t_friend
 void Player::HandleRoofCollision(Collider* t_other_collider, Collider* t_friendly_collider)
 {
 	// the player hit the bottom of a floor (a roof) so take them out of the collision and set their vertical velocity downward
-	if (t_friendly_collider->GetPosition().y + t_friendly_collider->GetDimensions().y / 2 <= t_other_collider->GetPosition().y && t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
+	if (t_friendly_collider->GetPosition().y + t_friendly_collider->GetDimensions().y / 2 <= (t_other_collider->GetPosition().y - t_other_collider->GetDimensions().y / 2) + 20 && t_other_collider->GetObjectBelongingTo()->GetType() == "Floor")
 	{
 		position.y -= (t_friendly_collider->GetPosition().y + t_friendly_collider->GetDimensions().y) - (t_other_collider->GetPosition().y) - 1;
 		velocity.y = -20;
